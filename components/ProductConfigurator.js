@@ -59,6 +59,15 @@ export default function ProductConfigurator({ product, description, keywords=[] 
       <h1 className="productTitle">{product.title}</h1>
       <div className="price productPrice">${Number(product.retail_price||0).toFixed(2)}</div>
 
+      <div className="cuteDescription">
+        <div className="descSparkle">♡</div>
+        <p>{description}</p>
+      </div>
+
+      {keywords.length ? <div className="styleTags" aria-label="Product style tags">
+        {keywords.map(k=><span className="styleTag" key={k}>{k}</span>)}
+      </div> : null}
+
       {variants.length ? <section className="variantSection">
         <div className="variantHeading"><strong>Choose an option</strong>{selectedVariant?.name ? <span>{selectedVariant.name}</span> : null}</div>
         <div className="variantGrid">
@@ -68,15 +77,6 @@ export default function ProductConfigurator({ product, description, keywords=[] 
           </button>)}
         </div>
       </section> : null}
-
-      <div className="cuteDescription">
-        <div className="descSparkle">♡</div>
-        <p>{description}</p>
-      </div>
-
-      {keywords.length ? <div className="styleTags" aria-label="Product style tags">
-        {keywords.map(k=><span className="styleTag" key={k}>{k}</span>)}
-      </div> : null}
 
       <button className="buyButton" onClick={addItem}>Add to Cart</button>
       <p className="shippingNote">Secure checkout · Shipping shown at checkout</p>
