@@ -58,6 +58,23 @@ export default function ProductConfigurator({ product, description, keywords=[] 
     });
   };
 
+  const productUrl = typeof window !== "undefined" ? window.location.href : "";
+  const shareText = `${product.title} - TMBTY`;
+  const shareImage = selectedVariant?.image || images[0] || "";
+
+  const openShare = (type) => {
+    const url = encodeURIComponent(productUrl);
+    const text = encodeURIComponent(shareText);
+    const media = encodeURIComponent(shareImage);
+    if(type==="pinterest") return window.open(`https://www.pinterest.com/pin/create/button/?url=${url}&media=${media}&description=${text}`,"_blank","noopener,noreferrer");
+    if(type==="facebook") return window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`,"_blank","noopener,noreferrer");
+    if(navigator.share){
+      return navigator.share({title:product.title,text:shareText,url:productUrl}).catch(()=>{});
+    }
+    navigator.clipboard?.writeText(productUrl);
+    alert("Product link copied. Paste it into your social post.");
+  };
+
   return <>
     <section className="fashionProduct">
       <div className="fashionMedia">
@@ -111,6 +128,18 @@ export default function ProductConfigurator({ product, description, keywords=[] 
             <span className="payBadge discover">Discover</span>
           </div>
           <div className="secureCheckoutNote">Secure payment processing at checkout</div>
+        </div>
+
+        <div className="productShare">
+          <span className="shareLabel">Share</span>
+          <div className="shareButtons">
+            <button type="button" className="shareBtn pinterestShare" onClick={()=>openShare("pinterest")} aria-label="Share on Pinterest">P</button>
+            <button type="button" className="shareBtn facebookShare" onClick={()=>openShare("facebook")} aria-label="Share on Facebook">f</button>
+            <button type="button" className="shareBtn instagramShare" onClick={()=>openShare("instagram")} aria-label="Share on Instagram">◎</button>
+            <button type="button" className="shareBtn tiktokShare" onClick={()=>openShare("tiktok")} aria-label="Share on TikTok">♪</button>
+            <button type="button" className="shareBtn youtubeShare" onClick={()=>openShare("youtube")} aria-label="Share on YouTube">▶</button>
+          </div>
+          <div className="shareHint">Pinterest and Facebook open directly. Other apps use your device share menu.</div>
         </div>
       </aside>
     </section>
