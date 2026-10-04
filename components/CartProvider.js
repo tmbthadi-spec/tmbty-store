@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const CartContext = createContext(null);
-const KEY = "tmbty_cart_v2";
+const KEY = "tmbty_cart_v3";
 const SUPABASE_URL = "https://dchbrrnywealudwripwq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_VZv2J1E4sAxQHIQs-NK7rQ_YJ3AK7Ws";
 
@@ -27,27 +27,31 @@ export function CartProvider({ children }) {
   }, [cart, ready]);
 
   const add = (product) => {
+    const variant = product.selectedVariant?.name || "";
+    const cartKey = product.id + "::" + variant;
     setCart(prev => {
-      const found = prev.find(x => x.id === product.id);
-      if (found) return prev.map(x => x.id === product.id ? {...x, qty:x.qty+1} : x);
+      const found = prev.find(x => x.cartKey === cartKey);
+      if (found) return prev.map(x => x.cartKey === cartKey ? {...x, qty:x.qty+1} : x);
       return [...prev, {
+        cartKey,
         id: product.id,
         title: product.title,
+        variant: variant || null,
         price: Number(product.retail_price || 0),
-        image: Array.isArray(product.images) ? (product.images[0] || "") : "",
+        image: product.cartImage || (Array.isArray(product.images) ? (product.images[0] || "") : ""),
         qty: 1
       }];
     });
     setOpen(true);
   };
 
-  const changeQty = (id, delta) => {
+  const changeQty = (cartKey, delta) => {
     setCart(prev => prev
-      .map(x => x.id === id ? {...x, qty:x.qty+delta} : x)
+      .map(x => x.cartKey === cartKey ? {...x, qty:x.qty+delta} : x)
       .filter(x => x.qty > 0));
   };
 
-  const remove = id => setCart(prev => prev.filter(x => x.id !== id));
+  const remove = cartKey => setCart(prev => prev.filter(x => x.cartKey !== cartKey));
   const clear = () => setCart([]);
   const count = useMemo(() => cart.reduce((a,b)=>a+b.qty,0), [cart]);
   const subtotal = useMemo(() => cart.reduce((a,b)=>a+b.price*b.qty,0), [cart]);
@@ -58,12 +62,9 @@ export function CartProvider({ children }) {
     try {
       const r = await fetch(`${SUPABASE_URL}/functions/v1/tmbty-create-checkout`, {
         method: "POST",
-        headers: {
-          apikey: SUPABASE_KEY,
-          "Content-Type": "application/json"
-        },
+        headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: cart.map(i=>({id:i.id,qty:i.qty})),
+          items: cart.map(i=>({id:i.id,qty:i.qty,variant:i.variant||null})),
           origin: window.location.origin
         })
       });
@@ -80,6 +81,4 @@ export function CartProvider({ children }) {
   </CartContext.Provider>
 }
 
-export function useCart() {
-  return useContext(CartContext);
-}
+export function useCart() { return useContext(CartContext); }
