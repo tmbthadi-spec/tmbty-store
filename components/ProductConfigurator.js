@@ -98,8 +98,19 @@ export default function ProductConfigurator({ product, description, keywords=[] 
 
         <div className="fashionInfoRows">
           <div><span>Shipping</span><strong>{product.shipping_eta_text ? `Estimated arrival ${product.shipping_eta_text}` : "Estimated at checkout"}</strong></div>
-          <div><span>Returns</span><strong>See return policy</strong></div>
-          <div><span>Payment</span><strong>Secure checkout</strong></div>
+        </div>
+
+        <div className="secureCheckoutBox" aria-label="Secure checkout">
+          <div className="secureCheckoutTitle">GUARANTEED SAFE CHECKOUT</div>
+          <div className="paymentBadges">
+            <span className="payBadge paypal">PayPal</span>
+            <span className="payBadge stripe">Stripe</span>
+            <span className="payBadge visa">VISA</span>
+            <span className="payBadge mastercard">Mastercard</span>
+            <span className="payBadge amex">AMEX</span>
+            <span className="payBadge discover">Discover</span>
+          </div>
+          <div className="secureCheckoutNote">Secure payment processing at checkout</div>
         </div>
       </aside>
     </section>
