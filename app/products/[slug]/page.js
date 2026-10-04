@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getProductBySlug } from "../../../lib/supabase";
 import AddToCartButton from "../../../components/AddToCartButton";
+import ProductMediaGallery from "../../../components/ProductMediaGallery";
 
 export const dynamic = "force-dynamic";
 
@@ -9,16 +10,18 @@ export async function generateMetadata({ params }) {
   const p = await getProductBySlug(slug);
   if (!p) return {};
   const description = (p.meta_description || p.description || "").replace(/#\w+/g,"").slice(0,160);
+  const keywords = Array.isArray(p.seo_keywords) ? p.seo_keywords.slice(0,10) : [];
   return {
     title: p.title,
     description,
+    keywords,
     alternates: { canonical: `/products/${p.slug}` },
     openGraph: {
       type:"website",
       title:p.title,
       description,
       url:`/products/${p.slug}`,
-      images:p.images?.[0] ? [{url:p.images[0],alt:p.title}] : []
+      images:p.images?.[0] ? [{url:p.images[0],alt:`${p.title} product cover`}] : []
     }
   };
 }
@@ -28,6 +31,7 @@ export default async function ProductPage({ params }) {
   const p = await getProductBySlug(slug);
   if (!p) notFound();
 
+  const keywords = Array.isArray(p.seo_keywords) ? p.seo_keywords.filter(Boolean).slice(0,6) : [];
   const schema = {
     "@context":"https://schema.org",
     "@type":"Product",
@@ -35,6 +39,7 @@ export default async function ProductPage({ params }) {
     description:p.meta_description || p.description || "",
     image:p.images || [],
     sku:p.id,
+    category:[p.category,p.subcategory].filter(Boolean).join(" > "),
     brand:{ "@type":"Brand", name:"TMBTY" },
     offers:{
       "@type":"Offer",
@@ -44,20 +49,27 @@ export default async function ProductPage({ params }) {
     }
   };
 
-  return <main className="wrap">
+  return <main className="wrap productPage">
     <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}} />
     <div className="detail">
-      <div>
-        {p.images?.[0] && <img className="mainimg" src={p.images[0]} alt={p.title} />}
-        <div className="thumbs">{(p.images||[]).slice(1,7).map((u,i)=><img key={i} src={u} alt={`${p.title} view ${i+2}`} />)}</div>
-        {p.video_url ? <video controls style={{width:"100%",marginTop:12,borderRadius:12}} src={p.video_url} /> : null}
-      </div>
-      <div>
+      <ProductMediaGallery title={p.title} images={p.images||[]} videoUrl={p.video_url||""} />
+
+      <div className="productInfo">
         <div className="cat">{p.category}{p.subcategory ? ` · ${p.subcategory}` : ""}</div>
-        <h1 style={{fontSize:36}}>{p.title}</h1>
-        <div className="price">${Number(p.retail_price||0).toFixed(2)}</div>
-        <p style={{lineHeight:1.7}}>{p.description}</p>
+        <h1 className="productTitle">{p.title}</h1>
+        <div className="price productPrice">${Number(p.retail_price||0).toFixed(2)}</div>
+
+        <div className="cuteDescription">
+          <div className="descSparkle">♡</div>
+          <p>{p.description}</p>
+        </div>
+
+        {keywords.length ? <div className="styleTags" aria-label="Product style tags">
+          {keywords.map(k=><span className="styleTag" key={k}>{k}</span>)}
+        </div> : null}
+
         <AddToCartButton product={{id:p.id,title:p.title,retail_price:p.retail_price,images:p.images||[]}} />
+        <p className="shippingNote">Secure checkout · Shipping shown at checkout</p>
       </div>
     </div>
   </main>
