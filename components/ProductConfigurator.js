@@ -36,7 +36,7 @@ function normalizeVariants(variants, selectedColor, fallbackImage){
   return list;
 }
 
-export default function ProductConfigurator({ product, description, keywords=[] }) {
+export default function ProductConfigurator({ product, description, keywords=[], relatedProducts=[] }) {
   const { add } = useCart();
   const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
   const variants = useMemo(()=>normalizeVariants(product.variants,product.selected_color,images[0]),[product.variants,product.selected_color,images]);
@@ -151,7 +151,6 @@ export default function ProductConfigurator({ product, description, keywords=[] 
           <div><span>Category</span><strong>{product.category || "—"}</strong></div>
           <div><span>Type</span><strong>{product.subcategory || "—"}</strong></div>
           {selectedVariant?.name ? <div><span>Style</span><strong>{selectedVariant.name}</strong></div> : null}
-          <div><span>Brand</span><strong>TMBTY</strong></div>
         </div>
       </div>
 
@@ -169,6 +168,24 @@ export default function ProductConfigurator({ product, description, keywords=[] 
           <li>Secure checkout through TMBTY</li>
         </ul>
       </div>
+
+      {relatedProducts.length ? <div className="relatedProducts">
+        <div className="relatedHeader">
+          <h2>You May Also Like</h2>
+          <span>More styles picked for you</span>
+        </div>
+        <div className="relatedGrid">
+          {relatedProducts.map(r=><a className="relatedCard" href={`/products/${r.slug}`} key={r.id}>
+            <div className="relatedImageWrap">
+              {r.images?.[0] ? <img src={r.images[0]} alt={r.title}/> : <div className="relatedEmpty">TMBTY</div>}
+            </div>
+            <div className="relatedBody">
+              <div className="relatedTitle">{r.title}</div>
+              <div className="relatedPrice">${Number(r.retail_price||0).toFixed(2)}</div>
+            </div>
+          </a>)}
+        </div>
+      </div> : null}
 
       {keywords.length ? <div className="seoFooterTags" aria-label="Product search terms">
         {keywords.map(k=><span key={k}>{k}</span>)}
