@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { getProductBySlug } from "../../../lib/supabase";
-import AddToCartButton from "../../../components/AddToCartButton";
-import ProductMediaGallery from "../../../components/ProductMediaGallery";
+import ProductConfigurator from "../../../components/ProductConfigurator";
 
 export const dynamic = "force-dynamic";
 
@@ -51,26 +50,14 @@ export default async function ProductPage({ params }) {
 
   return <main className="wrap productPage">
     <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}} />
-    <div className="detail">
-      <ProductMediaGallery title={p.title} images={p.images||[]} videoUrl={p.video_url||""} />
-
-      <div className="productInfo">
-        <div className="cat">{p.category}{p.subcategory ? ` · ${p.subcategory}` : ""}</div>
-        <h1 className="productTitle">{p.title}</h1>
-        <div className="price productPrice">${Number(p.retail_price||0).toFixed(2)}</div>
-
-        <div className="cuteDescription">
-          <div className="descSparkle">♡</div>
-          <p>{p.description}</p>
-        </div>
-
-        {keywords.length ? <div className="styleTags" aria-label="Product style tags">
-          {keywords.map(k=><span className="styleTag" key={k}>{k}</span>)}
-        </div> : null}
-
-        <AddToCartButton product={{id:p.id,title:p.title,retail_price:p.retail_price,images:p.images||[]}} />
-        <p className="shippingNote">Secure checkout · Shipping shown at checkout</p>
-      </div>
-    </div>
+    <ProductConfigurator
+      product={{
+        id:p.id,title:p.title,retail_price:p.retail_price,images:p.images||[],
+        video_url:p.video_url||"",variants:p.variants||[],selected_color:p.selected_color||"",
+        category:p.category||"",subcategory:p.subcategory||""
+      }}
+      description={p.description||""}
+      keywords={keywords}
+    />
   </main>
 }
