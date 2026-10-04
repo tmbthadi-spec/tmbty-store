@@ -97,7 +97,7 @@ export default function ProductConfigurator({ product, description, keywords=[] 
         <button className="fashionAdd" onClick={addItem}>ADD TO CART</button>
 
         <div className="fashionInfoRows">
-          <div><span>Shipping</span><strong>Calculated at checkout</strong></div>
+          <div><span>Shipping</span><strong>{product.shipping_eta_text ? `Estimated arrival ${product.shipping_eta_text}` : "Estimated at checkout"}</strong></div>
           <div><span>Returns</span><strong>See return policy</strong></div>
           <div><span>Payment</span><strong>Secure checkout</strong></div>
         </div>
