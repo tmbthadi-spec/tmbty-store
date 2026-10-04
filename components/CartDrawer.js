@@ -10,16 +10,17 @@ export default function CartDrawer(){
       <h2>Your Cart</h2>
       {!cart.length ? <p className="muted">Your cart is empty.</p> :
         <>
-          {cart.map(i=><div className="cartRow" key={i.id}>
+          {cart.map(i=><div className="cartRow" key={i.cartKey||i.id}>
             {i.image ? <img src={i.image} alt={i.title} /> : <div />}
             <div>
               <strong>{i.title}</strong>
+              {i.variant ? <div className="cartVariant">Option: {i.variant}</div> : null}
               <div>${i.price.toFixed(2)}</div>
               <div className="qty">
-                <button onClick={()=>changeQty(i.id,-1)}>−</button>
+                <button onClick={()=>changeQty(i.cartKey||i.id,-1)}>−</button>
                 <span>{i.qty}</span>
-                <button onClick={()=>changeQty(i.id,1)}>+</button>
-                <button onClick={()=>remove(i.id)} className="removeBtn">Remove</button>
+                <button onClick={()=>changeQty(i.cartKey||i.id,1)}>+</button>
+                <button onClick={()=>remove(i.cartKey||i.id)} className="removeBtn">Remove</button>
               </div>
             </div>
             <strong>${(i.price*i.qty).toFixed(2)}</strong>
