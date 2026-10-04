@@ -55,3 +55,10 @@ footer{margin-top:50px;padding:30px 0;border-top:1px solid #eee2e9;color:#7a6d76
 .fashionDetails{border-top:1px solid #e8e8e8;margin-top:28px;padding:36px 0 18px}.detailsBlock{max-width:900px;padding-bottom:30px}.detailsBlock h2{font-family:Arial,sans-serif;font-size:20px;margin:0 0 16px}.detailsGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid #eee;border-left:1px solid #eee}.detailsGrid>div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:13px 14px;border-right:1px solid #eee;border-bottom:1px solid #eee;font-size:13px}.detailsGrid span{color:#777}.detailsGrid strong{font-weight:600}.descriptionBlock p{margin:0;line-height:1.85;font-size:15px;color:#3f3f3f}.specsBlock ul{margin:0;padding-left:18px;line-height:1.8;color:#444}
 .seoFooterTags{margin-top:20px;padding-top:24px;border-top:1px solid #f0f0f0;display:flex;gap:8px;flex-wrap:wrap;opacity:.55}.seoFooterTags span{font-size:11px;color:#777;border:1px solid #eee;padding:5px 8px;border-radius:999px}
 @media(max-width:900px){.fashionProduct{grid-template-columns:1fr;gap:24px}.fashionInfo{position:static}.fashionMedia{grid-template-columns:1fr}.fashionThumbRail{order:2;flex-direction:row;overflow-x:auto}.fashionThumb{min-width:68px;width:68px;height:82px}.fashionMainMedia{min-height:440px}.fashionSwatches{grid-template-columns:repeat(4,minmax(0,1fr))}.detailsGrid{grid-template-columns:1fr}}
+
+.secureCheckoutBox{margin-top:18px;border:1px solid #e8e8e8;background:#fff;padding:16px 14px;text-align:center}
+.secureCheckoutTitle{font-size:13px;font-weight:800;letter-spacing:.4px;margin-bottom:12px}
+.paymentBadges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+.payBadge{display:inline-flex;align-items:center;justify-content:center;min-width:64px;height:34px;padding:0 10px;border:1px solid #ddd;border-radius:5px;background:#fff;font-size:12px;font-weight:800}
+.paypal{color:#0b57a4}.stripe{color:#635bff}.visa{color:#1a1f71}.mastercard{color:#b21d24}.amex{color:#2671b9}.discover{color:#d9781e}
+.secureCheckoutNote{font-size:11px;color:#777;margin-top:9px}
