@@ -26,7 +26,7 @@ export default function CartDrawer(){
           </div>)}
           <div className="cartSummary">
             <div><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
-            <p className="muted small">Shipping is calculated before payment.</p>
+            <p className="muted small">Shipping is shown during checkout when available.</p>
             <button className="checkoutBtn" onClick={checkout}>Secure Checkout</button>
             {status ? <div className="small muted">{status}</div> : null}
           </div>
