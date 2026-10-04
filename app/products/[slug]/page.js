@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getProductBySlug } from "../../../lib/supabase";
+import { getProductBySlug, getRelatedProducts } from "../../../lib/supabase";
 import ProductConfigurator from "../../../components/ProductConfigurator";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +31,7 @@ export default async function ProductPage({ params }) {
   if (!p) notFound();
 
   const keywords = Array.isArray(p.seo_keywords) ? p.seo_keywords.filter(Boolean).slice(0,6) : [];
+  const relatedProducts = await getRelatedProducts(p.id,p.category,p.subcategory,8);
   const schema = {
     "@context":"https://schema.org",
     "@type":"Product",
@@ -39,7 +40,6 @@ export default async function ProductPage({ params }) {
     image:p.images || [],
     sku:p.id,
     category:[p.category,p.subcategory].filter(Boolean).join(" > "),
-    brand:{ "@type":"Brand", name:"TMBTY" },
     offers:{
       "@type":"Offer",
       priceCurrency:"USD",
@@ -58,6 +58,7 @@ export default async function ProductPage({ params }) {
       }}
       description={p.description||""}
       keywords={keywords}
+      relatedProducts={relatedProducts}
     />
   </main>
 }
