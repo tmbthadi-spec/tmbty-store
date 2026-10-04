@@ -1,6 +1,6 @@
 import { getProductsByCategory } from "../../../lib/supabase";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   const { category } = await params;
