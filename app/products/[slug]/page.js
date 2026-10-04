@@ -54,7 +54,7 @@ export default async function ProductPage({ params }) {
       product={{
         id:p.id,title:p.title,retail_price:p.retail_price,images:p.images||[],
         video_url:p.video_url||"",variants:p.variants||[],selected_color:p.selected_color||"",
-        category:p.category||"",subcategory:p.subcategory||""
+        category:p.category||"",subcategory:p.subcategory||"",shipping_eta_text:p.shipping_eta_text||""
       }}
       description={p.description||""}
       keywords={keywords}
