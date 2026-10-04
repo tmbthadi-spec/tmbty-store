@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getProductBySlug } from "../../../lib/supabase";
 import AddToCartButton from "../../../components/AddToCartButton";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -28,7 +28,6 @@ export default async function ProductPage({ params }) {
   const p = await getProductBySlug(slug);
   if (!p) notFound();
 
-  const reviews = Array.isArray(p.reviews) ? p.reviews : [];
   const schema = {
     "@context":"https://schema.org",
     "@type":"Product",
@@ -41,14 +40,8 @@ export default async function ProductPage({ params }) {
       "@type":"Offer",
       priceCurrency:"USD",
       price:Number(p.retail_price||0).toFixed(2),
-      availability:"https://schema.org/InStock",
       url:`https://tmbty.com/products/${p.slug}`
-    },
-    ...(p.rating ? {aggregateRating:{
-      "@type":"AggregateRating",
-      ratingValue:String(p.rating),
-      reviewCount:String(Math.max(1,reviews.length))
-    }} : {})
+    }
   };
 
   return <main className="wrap">
@@ -64,10 +57,8 @@ export default async function ProductPage({ params }) {
         <h1 style={{fontSize:36}}>{p.title}</h1>
         <div className="price">${Number(p.retail_price||0).toFixed(2)}</div>
         <p style={{lineHeight:1.7}}>{p.description}</p>
-        <div className="tags">{(p.seo_keywords||[]).slice(0,8).map(k=><span className="tag" key={k}>{k}</span>)}</div>
         <AddToCartButton product={{id:p.id,title:p.title,retail_price:p.retail_price,images:p.images||[]}} />
       </div>
     </div>
-    {reviews.length ? <section><h2>Customer Reviews</h2>{reviews.slice(0,7).map((r,i)=><div className="review" key={i}><strong>{r.rating ? `${r.rating}★` : ""}</strong><div>{r.text}</div></div>)}</section> : null}
   </main>
 }
