@@ -81,6 +81,13 @@ export default function ProductConfigurator({ product, description, keywords=[],
   const shareText = `${product.title} - TMBTY`;
   const shareImage = images[0] || selectedVariant?.image || "";
 
+  const pinMedia = (mediaUrl) => {
+    const url = encodeURIComponent(productUrl);
+    const text = encodeURIComponent(shareText);
+    const media = encodeURIComponent(mediaUrl || images[0] || "");
+    window.open(`https://www.pinterest.com/pin/create/button/?url=${url}&media=${media}&description=${text}`,"_blank","noopener,noreferrer");
+  };
+
   const openShare = (type) => {
     const url = encodeURIComponent(productUrl);
     const text = encodeURIComponent(shareText);
@@ -101,14 +108,23 @@ export default function ProductConfigurator({ product, description, keywords=[],
           {product.video_url ? <button className={"fashionThumb videoThumb"+(active.type==="video"?" active":"")} onClick={()=>setActive({type:"video",value:product.video_url})} aria-label="Play product video">
             {images[0] ? <img src={images[0]} alt=""/> : null}<span className="playBadge">▶</span>
           </button> : null}
-          {images.slice(0,8).map((u,i)=><button className={"fashionThumb"+(active.type==="image"&&active.value===u?" active":"")} onClick={()=>setActive({type:"image",value:u})} key={u+i}>
-            <img src={u} alt={i===0?`${product.title} cover`:`${product.title} image ${i+1}`}/>
-          </button>)}
+          {images.slice(0,8).map((u,i)=><div className="fashionThumbWrap" key={u+i}>
+            <button className={"fashionThumb"+(active.type==="image"&&active.value===u?" active":"")} onClick={()=>setActive({type:"image",value:u})}>
+              <img src={u} alt={i===0?`${product.title} cover`:`${product.title} image ${i+1}`}/>
+            </button>
+            <button type="button" className="pinItThumb" onClick={(e)=>{e.stopPropagation();pinMedia(u)}} aria-label={`Pin ${product.title} image ${i+1} to Pinterest`}>Pin it</button>
+          </div>)}
         </div>
         <div className="fashionMainMedia">
           {active.type==="video" && product.video_url
-            ? <video controls autoPlay playsInline poster={images[0]||undefined} src={product.video_url}/>
-            : active.value ? <img src={active.value} alt={product.title}/> : <div className="mediaEmpty">TMBTY</div>}
+            ? <>
+                <video controls autoPlay playsInline poster={images[0]||undefined} src={product.video_url}/>
+                <button type="button" className="pinItMain" onClick={()=>pinMedia(images[0]||"")} aria-label="Pin this product to Pinterest">Pin it</button>
+              </>
+            : active.value ? <>
+                <img src={active.value} alt={product.title}/>
+                <button type="button" className="pinItMain" onClick={()=>pinMedia(active.value)} aria-label="Pin this image to Pinterest">Pin it</button>
+              </> : <div className="mediaEmpty">TMBTY</div>}
         </div>
       </div>
 
