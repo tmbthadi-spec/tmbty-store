@@ -38,7 +38,8 @@ function normalizeReviews(reviews){
     const rating=Number.isFinite(ratingNum)&&ratingNum>=1&&ratingNum<=5?ratingNum:null;
     const images=Array.isArray(r?.images)?r.images.filter(Boolean).slice(0,6):[];
     const date=String(r?.date||"").trim();
-    return {text,rating,images,date,key:`review-${i}`};
+    const reviewer_name=String(r?.reviewer_name||r?.reviewerName||r?.name||"").trim();
+    return {text,rating,images,date,reviewer_name,key:`review-${i}`};
   }).filter(Boolean).slice(0,20);
 }
 
@@ -195,7 +196,10 @@ export default function ProductConfigurator({ product, description, keywords=[],
         <div className="productReviewList">
           {reviews.map(r=><article className="productReviewCard" key={r.key}>
             <div className="productReviewMeta">
-              {r.rating ? <strong className="reviewStars" aria-label={`${r.rating} out of 5 stars`}>{"★".repeat(Math.round(r.rating))}<span>{"★".repeat(Math.max(0,5-Math.round(r.rating)))}</span></strong> : null}
+              <div>
+                {r.reviewer_name ? <strong className="reviewerName">{r.reviewer_name}</strong> : null}
+                {r.rating ? <strong className="reviewStars" aria-label={`${r.rating} out of 5 stars`}>{"★".repeat(Math.round(r.rating))}<span>{"★".repeat(Math.max(0,5-Math.round(r.rating)))}</span></strong> : null}
+              </div>
               {r.date ? <time>{r.date}</time> : null}
             </div>
             <p>{r.text}</p>
