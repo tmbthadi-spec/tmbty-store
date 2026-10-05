@@ -105,9 +105,30 @@ export default function ReviewImporterAdmin(){
   }
 
   async function syncOne(product,t=token){
-    const reviews=await scrapeReviews(product,t);
-    const count=await saveReviews(product,reviews,t);
-    return {count};
+    const scrape=await apiFetch(SCRAPE_API,t,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({url:product.supplier_url})
+    });
+
+    const reviews=Array.isArray(scrape.data?.reviews)?scrape.data.reviews:[];
+    if(scrape.status===429 || scrape.data?.error==="aliexpress_blocked"){
+      return {count:0,message:"blocked"};
+    }
+
+    const saved=await apiFetch(SAVE_API,t,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        source_product_id:product.source_product_id,
+        reviews
+      })
+    });
+
+    return {
+      count:Number(saved.data?.product?.review_count||reviews.length||0),
+      message:"done"
+    };
   }
 
   async function scan(list){
