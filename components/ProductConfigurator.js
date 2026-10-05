@@ -60,7 +60,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
   const variants = useMemo(()=>normalizeVariants(product.variants,product.selected_color,images[0]),[product.variants,product.selected_color,images]);
   const initialVariant = variants.find(v=>v.selected) || variants.find(v=>v.rawName===product.selected_color) || variants[0] || null;
   const [selectedVariant,setSelectedVariant] = useState(initialVariant);
-  const [active,setActive] = useState({type:"image",value:initialVariant?.image || images[0] || ""});
+  const [active,setActive] = useState({type:"image",value:images[0] || initialVariant?.image || ""});
 
   const selectVariant=(v)=>{
     setSelectedVariant(v);
@@ -78,7 +78,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
 
   const productUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareText = `${product.title} - TMBTY`;
-  const shareImage = selectedVariant?.image || images[0] || "";
+  const shareImage = images[0] || selectedVariant?.image || "";
 
   const openShare = (type) => {
     const url = encodeURIComponent(productUrl);
