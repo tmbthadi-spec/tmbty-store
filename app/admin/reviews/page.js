@@ -4,10 +4,17 @@ import { useEffect, useMemo, useState } from "react";
 
 const SUPABASE_URL="https://dchbrrnywealudwripwq.supabase.co";
 const SUPABASE_KEY="sb_publishable_VZv2J1E4sAxQHIQs-NK7rQ_YJ3AK7Ws";
-const API=SUPABASE_URL+"/functions/v1/tmbty-review-importer";
+const LIST_API=SUPABASE_URL+"/functions/v1/tmbty-review-importer";
+const SAVE_API=SUPABASE_URL+"/functions/v1/tmbty-review-sync";
+const SCRAPE_API="/api/reviews/scrape";
 
-async function apiFetch(token,options={}){
-  const r=await fetch(API,{
+async function readJson(r){
+  const text=await r.text();
+  try{return JSON.parse(text);}catch{return {error:text||("HTTP "+r.status)};}
+}
+
+async function supabaseFetch(url,token,options={}){
+  const r=await fetch(url,{
     ...options,
     headers:{
       apikey:SUPABASE_KEY,
@@ -15,11 +22,9 @@ async function apiFetch(token,options={}){
       ...(options.headers||{})
     }
   });
-  const text=await r.text();
-  let data={};
-  try{ data=JSON.parse(text); }catch{ data={error:text||("HTTP "+r.status)}; }
-  if(!r.ok && r.status!==202) throw new Error(data.message||data.error||("HTTP "+r.status));
-  return {status:r.status,data};
+  const data=await readJson(r);
+  if(!r.ok) throw new Error(data.message||data.error||("HTTP "+r.status));
+  return data;
 }
 
 export default function ReviewImporterAdmin(){
@@ -27,12 +32,11 @@ export default function ReviewImporterAdmin(){
   const [password,setPassword]=useState("");
   const [token,setToken]=useState("");
   const [products,setProducts]=useState([]);
-  const [providerReady,setProviderReady]=useState(false);
   const [status,setStatus]=useState("Connect your TMBTY admin account.");
   const [busy,setBusy]=useState(false);
   const [progress,setProgress]=useState({done:0,total:0});
   const [current,setCurrent]=useState("");
-  const [stop,setStop]=useState(false);
+  const [stopRequested,setStopRequested]=useState(false);
 
   useEffect(()=>{
     const saved=localStorage.getItem("tmbty-review-admin-token")||"";
@@ -56,18 +60,17 @@ export default function ReviewImporterAdmin(){
       localStorage.setItem("tmbty-review-admin-token",d.access_token);
       localStorage.setItem("tmbty-review-admin-email",email);
       await loadProducts(d.access_token);
-    }catch(e){ setStatus("Connection failed: "+e.message); }
+    }catch(e){
+      setStatus("Connection failed: "+e.message);
+    }
   }
 
   async function loadProducts(t=token){
     if(!t) return;
     try{
-      const {data}=await apiFetch(t);
+      const data=await supabaseFetch(LIST_API,t);
       setProducts(data.products||[]);
-      setProviderReady(!!data.provider_ready);
-      setStatus(data.provider_ready
-        ? `Ready. Found ${(data.products||[]).length} TMBTY products.`
-        : "Review importer is installed, but the Bright Data server credentials still need to be added.");
+      setStatus(`Ready. Found ${(data.products||[]).length} TMBTY products.`);
     }catch(e){
       setStatus("Please reconnect: "+e.message);
       setToken("");
@@ -75,40 +78,68 @@ export default function ReviewImporterAdmin(){
     }
   }
 
-  async function syncOne(product,t=token){
-    const {status:code,data}=await apiFetch(t,{
+  async function scrapeReviews(product,t=token){
+    const r=await fetch(SCRAPE_API,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        Authorization:"Bearer "+t
+      },
+      body:JSON.stringify({url:product.supplier_url})
+    });
+    const data=await readJson(r);
+    if(!r.ok) throw new Error(data.message||data.error||("HTTP "+r.status));
+    return data.reviews||[];
+  }
+
+  async function saveReviews(product,reviews,t=token){
+    const data=await supabaseFetch(SAVE_API,t,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({action:"sync_product",source_product_id:product.source_product_id})
+      body:JSON.stringify({
+        source_product_id:product.source_product_id,
+        reviews
+      })
     });
-    if(code===202 || data.pending){
-      return {count:0,message:"still processing"};
-    }
-    return {count:Number(data.review_count||0),message:"done"};
+    return Number(data.product?.review_count||0);
+  }
+
+  async function syncOne(product,t=token){
+    const reviews=await scrapeReviews(product,t);
+    const count=await saveReviews(product,reviews,t);
+    return {count};
   }
 
   async function scan(list){
-    if(!providerReady){ setStatus("Add the Bright Data server credentials first."); return; }
-    if(!list.length){ setStatus("No products need scanning."); return; }
-    setBusy(true); setStop(false);
+    if(!list.length){
+      setStatus("No products need scanning.");
+      return;
+    }
+    setBusy(true);
+    setStopRequested(false);
     setProgress({done:0,total:list.length});
-    let imported=0,errors=0,pending=0;
+    let imported=0,errors=0,blocked=0;
+
     for(let i=0;i<list.length;i++){
-      if(stop) break;
+      if(stopRequested) break;
       const p=list[i];
       setCurrent(p.title);
       setStatus(`Scanning ${i+1}/${list.length}: ${p.title}`);
       try{
         const r=await syncOne(p);
-        if(r.message==="still processing") pending++;
         imported+=r.count;
-      }catch(e){ errors++; }
+      }catch(e){
+        const msg=String(e.message||e);
+        if(/blocked|captcha|429/i.test(msg)) blocked++;
+        else errors++;
+      }
       setProgress({done:i+1,total:list.length});
     }
+
     setCurrent("");
     setBusy(false);
     await loadProducts();
-    setStatus(`Finished. Imported ${imported} reviews. Pending: ${pending}. Errors: ${errors}.`);
+    setStatus(`Finished. Imported ${imported} reviews. Blocked products: ${blocked}. Other errors: ${errors}.`);
   }
 
   const emptyProducts=useMemo(()=>products.filter(p=>Number(p.review_count||0)===0),[products]);
@@ -119,8 +150,9 @@ export default function ReviewImporterAdmin(){
       <div>
         <div style={{fontSize:13,letterSpacing:1.4,textTransform:"uppercase",color:"#7c6476"}}>TMBTY Admin</div>
         <h1 style={{margin:"6px 0 8px"}}>Review Importer</h1>
-        <p style={{margin:0,color:"#6e626b",maxWidth:680}}>
-          Server-side AliExpress review importing. No browser extension and no AliExpress page opening.
+        <p style={{margin:0,color:"#6e626b",maxWidth:720}}>
+          Built into TMBTY. No Bright Data, no external review account, and no browser extension.
+          TMBTY opens each AliExpress product on the server, collects real product reviews, and saves up to 20.
         </p>
       </div>
       <a href="/" style={{color:"#6f4f68"}}>Back to store</a>
@@ -140,23 +172,22 @@ export default function ReviewImporterAdmin(){
         <Stat label="Products" value={products.length}/>
         <Stat label="With reviews" value={products.length-emptyProducts.length}/>
         <Stat label="No reviews" value={emptyProducts.length}/>
-        <Stat label="Provider" value={providerReady?"Ready":"Setup needed"}/>
+        <Stat label="Review engine" value="Built in"/>
       </div>
 
-      {!providerReady && <div style={{marginTop:16,padding:16,borderRadius:14,background:"#fff7df",border:"1px solid #efdda4",lineHeight:1.5}}>
-        <strong>One setup step remains:</strong> add the Bright Data API token and AliExpress Reviews dataset ID as private Supabase Edge Function secrets named
-        <code> BRIGHTDATA_API_TOKEN </code> and <code> BRIGHTDATA_ALIEXPRESS_REVIEWS_DATASET_ID</code>.
-        They are never exposed to shoppers or stored in this page.
-      </div>}
+      <div style={{marginTop:16,padding:16,borderRadius:14,background:"#f7f1f5",border:"1px solid #e4d6df",lineHeight:1.5}}>
+        <strong>Your review rules:</strong> exact product only, maximum 20, written reviews only, real 1–5 star rating,
+        reviewer name/date/photos when available, no store rating, no sold count, no recommendations, no duplicate reviews.
+      </div>
 
       <div style={{marginTop:18,padding:18,border:"1px solid #eadfe7",borderRadius:16,background:"#fff"}}>
         <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
-          <button disabled={busy||!providerReady} onClick={()=>scan(emptyProducts)} style={primaryButton}>
+          <button disabled={busy} onClick={()=>scan(emptyProducts)} style={primaryButton}>
             Scan products with no reviews ({emptyProducts.length})
           </button>
-          <button disabled={busy||!providerReady} onClick={()=>scan(products)} style={secondaryButton}>Refresh all products</button>
+          <button disabled={busy} onClick={()=>scan(products)} style={secondaryButton}>Refresh all products</button>
           <button disabled={busy} onClick={()=>loadProducts()} style={secondaryButton}>Reload list</button>
-          {busy && <button onClick={()=>setStop(true)} style={secondaryButton}>Stop</button>}
+          {busy && <button onClick={()=>setStopRequested(true)} style={secondaryButton}>Stop after current product</button>}
         </div>
 
         {(busy||progress.total>0) && <div style={{marginTop:16}}>
@@ -183,7 +214,7 @@ export default function ReviewImporterAdmin(){
               <td style={td}>{p.status}</td>
               <td style={td}><strong>{p.review_count||0}</strong></td>
               <td style={td}>
-                <button disabled={busy||!providerReady} onClick={()=>scan([p])} style={miniButton}>
+                <button disabled={busy} onClick={()=>scan([p])} style={miniButton}>
                   {p.review_count?"Refresh":"Import"}
                 </button>
               </td>
