@@ -82,3 +82,20 @@ footer{margin-top:50px;padding:30px 0;border-top:1px solid #eee2e9;color:#7a6d76
 .relatedEmpty{width:100%;height:100%;display:grid;place-items:center;color:#aaa;font-family:Georgia,serif}
 .relatedBody{padding:10px 11px 12px}.relatedTitle{font-size:13px;line-height:1.35;min-height:35px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.relatedPrice{font-size:15px;font-weight:800;margin-top:6px}
 @media(max-width:900px){.relatedGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.relatedHeader{align-items:flex-start;flex-direction:column;gap:5px}}
+
+
+.productReviews{margin-top:34px;padding-top:30px;border-top:1px solid #e9e9e9;max-width:900px}
+.productReviewsHeader{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:16px}
+.productReviewsHeader h2{font-family:Arial,sans-serif;font-size:22px;margin:0}
+.productReviewsHeader span{font-size:12px;color:#888}
+.productReviewList{display:grid;gap:14px}
+.productReviewCard{border:1px solid #ececec;background:#fff;padding:16px}
+.productReviewMeta{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:9px}
+.reviewStars{font-size:15px;letter-spacing:1px;color:#111}
+.reviewStars span{color:#d7d7d7}
+.productReviewMeta time{font-size:11px;color:#888}
+.productReviewCard p{margin:0;line-height:1.65;font-size:14px;color:#333}
+.reviewImages{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.reviewImages a{display:block;width:88px;height:88px;border:1px solid #eee;overflow:hidden;background:#fafafa}
+.reviewImages img{width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:700px){.reviewImages a{width:72px;height:72px}}
