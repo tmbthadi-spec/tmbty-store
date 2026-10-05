@@ -27,6 +27,21 @@ async function supabaseFetch(url,token,options={}){
   return data;
 }
 
+async function apiFetch(url,token,options={}){
+  const isSupabase=url.startsWith(SUPABASE_URL);
+  const r=await fetch(url,{
+    ...options,
+    headers:{
+      ...(isSupabase?{apikey:SUPABASE_KEY}:{}),
+      Authorization:"Bearer "+token,
+      ...(options.headers||{})
+    }
+  });
+  const data=await readJson(r);
+  if(!r.ok && r.status!==429) throw new Error(data.message||data.error||("HTTP "+r.status));
+  return {status:r.status,data};
+}
+
 export default function ReviewImporterAdmin(){
   const [email,setEmail]=useState("");
   const [password,setPassword]=useState("");
@@ -140,6 +155,7 @@ export default function ReviewImporterAdmin(){
     setStopRequested(false);
     setProgress({done:0,total:list.length});
     let imported=0,errors=0,blocked=0;
+    let firstError="";
 
     for(let i=0;i<list.length;i++){
       if(stopRequested) break;
@@ -151,6 +167,7 @@ export default function ReviewImporterAdmin(){
         imported+=r.count;
       }catch(e){
         const msg=String(e.message||e);
+        if(!firstError) firstError=msg;
         if(/blocked|captcha|429/i.test(msg)) blocked++;
         else errors++;
       }
@@ -160,7 +177,7 @@ export default function ReviewImporterAdmin(){
     setCurrent("");
     setBusy(false);
     await loadProducts();
-    setStatus(`Finished. Imported ${imported} reviews. Blocked products: ${blocked}. Other errors: ${errors}.`);
+    setStatus(`Finished. Imported ${imported} reviews. Blocked products: ${blocked}. Other errors: ${errors}.${firstError ? " First error: "+firstError : ""}`);
   }
 
   const emptyProducts=useMemo(()=>products.filter(p=>Number(p.review_count||0)===0),[products]);
