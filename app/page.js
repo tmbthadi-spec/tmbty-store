@@ -1,4 +1,5 @@
 import { getPublishedProducts } from "../lib/supabase";
+import RatingStars from "../components/RatingStars";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,7 @@ export default async function Home() {
           <div className="body">
             <div className="cat">{p.category}{p.subcategory ? ` · ${p.subcategory}` : ""}</div>
             <div className="title">{p.title}</div>
+            <RatingStars reviews={p.reviews||[]} rating={p.rating} compact />
             <div className="price">${Number(p.retail_price||0).toFixed(2)}</div>
           </div>
         </a>)}
