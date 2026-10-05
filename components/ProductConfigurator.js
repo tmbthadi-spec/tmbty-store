@@ -25,6 +25,23 @@ function prettifyOptionName(name){
     .replace(/\b\w/g,c=>c.toUpperCase()) || raw;
 }
 
+function normalizeReviews(reviews){
+  if(!Array.isArray(reviews)) return [];
+  const seen=new Set();
+  return reviews.map((r,i)=>{
+    const text=String(r?.text||"").trim();
+    if(text.length<10) return null;
+    const key=text.toLowerCase();
+    if(seen.has(key)) return null;
+    seen.add(key);
+    const ratingNum=Number(r?.rating);
+    const rating=Number.isFinite(ratingNum)&&ratingNum>=1&&ratingNum<=5?ratingNum:null;
+    const images=Array.isArray(r?.images)?r.images.filter(Boolean).slice(0,6):[];
+    const date=String(r?.date||"").trim();
+    return {text,rating,images,date,key:`review-${i}`};
+  }).filter(Boolean).slice(0,20);
+}
+
 function normalizeVariants(variants, selectedColor, fallbackImage){
   const list = Array.isArray(variants) ? variants.map((v,i)=>{
     if(typeof v==="string") return {name:prettifyOptionName(v),rawName:v,image:"",selected:false,key:v+"-"+i};
@@ -39,6 +56,7 @@ function normalizeVariants(variants, selectedColor, fallbackImage){
 export default function ProductConfigurator({ product, description, keywords=[], relatedProducts=[] }) {
   const { add } = useCart();
   const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
+  const reviews = useMemo(()=>normalizeReviews(product.reviews),[product.reviews]);
   const variants = useMemo(()=>normalizeVariants(product.variants,product.selected_color,images[0]),[product.variants,product.selected_color,images]);
   const initialVariant = variants.find(v=>v.selected) || variants.find(v=>v.rawName===product.selected_color) || variants[0] || null;
   const [selectedVariant,setSelectedVariant] = useState(initialVariant);
@@ -168,6 +186,25 @@ export default function ProductConfigurator({ product, description, keywords=[],
           <li>Secure checkout through TMBTY</li>
         </ul>
       </div>
+
+      {reviews.length ? <div className="productReviews">
+        <div className="productReviewsHeader">
+          <h2>Product Reviews</h2>
+          <span>{reviews.length} review{reviews.length===1?"":"s"}</span>
+        </div>
+        <div className="productReviewList">
+          {reviews.map(r=><article className="productReviewCard" key={r.key}>
+            <div className="productReviewMeta">
+              {r.rating ? <strong className="reviewStars" aria-label={`${r.rating} out of 5 stars`}>{"★".repeat(Math.round(r.rating))}<span>{"★".repeat(Math.max(0,5-Math.round(r.rating)))}</span></strong> : null}
+              {r.date ? <time>{r.date}</time> : null}
+            </div>
+            <p>{r.text}</p>
+            {r.images.length ? <div className="reviewImages">
+              {r.images.map((u,i)=><a href={u} target="_blank" rel="noreferrer" key={u+i}><img src={u} alt={`Customer review photo ${i+1}`}/></a>)}
+            </div> : null}
+          </article>)}
+        </div>
+      </div> : null}
 
       {relatedProducts.length ? <div className="relatedProducts">
         <div className="relatedHeader">
