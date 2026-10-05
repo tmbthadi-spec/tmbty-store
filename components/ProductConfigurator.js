@@ -40,7 +40,9 @@ function normalizeReviews(reviews){
     seen.add(key);
     const images=Array.isArray(r?.images)?r.images.filter(Boolean).slice(0,6):[];
     const date=String(r?.date||"").trim();
-    const reviewer_name=String(r?.reviewer_name||r?.reviewerName||r?.name||"").trim();
+    let reviewer_name=String(r?.reviewer_name||r?.reviewerName||r?.name||"").trim();
+    if(/aliexpress/i.test(reviewer_name)) reviewer_name="";
+    if(!reviewer_name) reviewer_name="Verified Customer";
     return {text,rating,images,date,reviewer_name,key:`review-${i}`};
   }).filter(Boolean).slice(0,20);
 }
