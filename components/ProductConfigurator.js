@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import { useCart } from "./CartProvider";
+import RatingStars from "./RatingStars";
 
 function prettifyOptionName(name){
   if(!name) return "";
@@ -135,6 +136,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
       <aside className="fashionInfo">
         <div className="fashionCategory">{product.category}{product.subcategory ? ` / ${product.subcategory}` : ""}</div>
         <h1>{product.title}</h1>
+        <RatingStars reviews={product.reviews||[]} rating={product.rating} />
         <div className="fashionPrice">${Number(product.retail_price||0).toFixed(2)}</div>
 
         {variants.length ? <section className="fashionOptions">
@@ -246,6 +248,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
             </div>
             <div className="relatedBody">
               <div className="relatedTitle">{r.title}</div>
+              <RatingStars reviews={r.reviews||[]} rating={r.rating} compact />
               <div className="relatedPrice">${Number(r.retail_price||0).toFixed(2)}</div>
             </div>
           </a>)}
