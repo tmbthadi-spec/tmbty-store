@@ -106,6 +106,71 @@ function mergeReviews(...groups){
   return out;
 }
 
+async function fetchDirectReviews(productId){
+  const endpoint="https://feedback.aliexpress.com/pc/searchEvaluation.do?productId="
+    +encodeURIComponent(productId)
+    +"&lang=en_US&country=US&page=1&pageSize=20&filter=all&sort=complex_default";
+
+  const r=await fetch(endpoint,{
+    method:"GET",
+    headers:{
+      "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+      "Accept":"application/json,text/plain,*/*",
+      "Accept-Language":"en-US,en;q=0.9",
+      "Referer":"https://www.aliexpress.us/"
+    },
+    cache:"no-store"
+  });
+
+  const text=await r.text();
+  if(!r.ok) return {ok:false,status:r.status,reviews:[],error:"feedback_http_"+r.status};
+
+  let data;
+  try{ data=JSON.parse(text); }
+  catch{
+    const m=text.match(/^[^(]*\((.*)\)\s*;?$/s);
+    if(!m) return {ok:false,status:r.status,reviews:[],error:"feedback_not_json"};
+    try{ data=JSON.parse(m[1]); }catch{ return {ok:false,status:r.status,reviews:[],error:"feedback_bad_json"}; }
+  }
+
+  const list=data?.data?.evaViewList || data?.response?.data?.evaViewList || [];
+  if(!Array.isArray(list)) return {ok:true,status:r.status,reviews:[],rawCount:0};
+
+  const reviews=[];
+  for(const x of list){
+    const buyerEval=Number(x?.buyerEval);
+    let rating=Number(x?.rating ?? x?.starRating ?? x?.star);
+    if(!Number.isFinite(rating) || rating<1 || rating>5){
+      if(Number.isFinite(buyerEval) && buyerEval>0) rating=Math.max(1,Math.min(5,Math.round(buyerEval/20)));
+    }
+
+    const textReview=clean(
+      x?.buyerTranslationFeedback ||
+      x?.buyerFeedback ||
+      x?.buyerProductFeedBack ||
+      x?.feedback ||
+      ""
+    );
+
+    const reviewer_name=clean(x?.buyerName || x?.buyerNameMasked || x?.userName || "").slice(0,80);
+    const date=clean(x?.evalDate || x?.evaluationDate || x?.date || "").slice(0,80);
+
+    const rawImages=Array.isArray(x?.images)?x.images:
+      Array.isArray(x?.imageList)?x.imageList:
+      Array.isArray(x?.photos)?x.photos:[];
+
+    const images=rawImages.map(v=>typeof v==="string"?v:(v?.url||v?.src||v?.image||""))
+      .filter(u=>/^https?:\/\//i.test(String(u||"")))
+      .slice(0,6);
+
+    const candidate={reviewer_name,text:textReview,rating,date,images};
+    if(validReview(candidate)) reviews.push(candidate);
+    if(reviews.length>=20) break;
+  }
+
+  return {ok:true,status:r.status,reviews,rawCount:list.length};
+}
+
 export async function POST(req){
   if(!(await verifyUser(req))) return NextResponse.json({error:"unauthorized"},{status:401});
 
@@ -114,6 +179,22 @@ export async function POST(req){
   const url=String(body?.url||"");
   if(!/^https:\/\/(?:www\.)?aliexpress\.(?:us|com)\/item\/\d+\.html/i.test(url)){
     return NextResponse.json({error:"invalid_aliexpress_product_url"},{status:400});
+  }
+
+  const productId=url.match(/\/item\/(\d+)\.html/i)?.[1]||"";
+  if(productId){
+    try{
+      const direct=await fetchDirectReviews(productId);
+      if(direct.reviews.length){
+        return NextResponse.json({
+          ok:true,
+          source:"aliexpress_feedback_endpoint",
+          raw_count:Number(direct.rawCount||0),
+          review_count:direct.reviews.length,
+          reviews:direct.reviews
+        });
+      }
+    }catch{}
   }
 
   let browser;
@@ -265,7 +346,12 @@ export async function POST(req){
     }).catch(()=>[]);
 
     const reviews=mergeReviews(networkReviews,domReviews);
-    return NextResponse.json({ok:true,review_count:reviews.length,reviews});
+    return NextResponse.json({
+      ok:true,
+      source:"browser_fallback",
+      review_count:reviews.length,
+      reviews
+    });
   }catch(e){
     return NextResponse.json({error:"scrape_failed",message:String(e?.message||e)},{status:500});
   }finally{
