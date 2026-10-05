@@ -114,11 +114,11 @@ footer{margin-top:50px;padding:30px 0;border-top:1px solid #eee2e9;color:#7a6d76
 
 /* Product rating stars across storefront */
 .ratingStars{display:flex;align-items:center;gap:6px;margin:8px 0 14px;line-height:1}
-.ratingStars .ratingFilled{color:#f2b01e;letter-spacing:1px;font-size:18px}
-.ratingStars .ratingEmpty{color:#d7d7d7;letter-spacing:1px;font-size:18px}
+.ratingStars .ratingFilled{color:#d71920;letter-spacing:2px;font-size:24px}
+.ratingStars .ratingEmpty{color:#e7b5b7;letter-spacing:2px;font-size:24px}
 .ratingStars strong{font-size:13px;color:#222}
 .ratingStars em{font-size:12px;color:#777;font-style:normal}
 .ratingStars.compact{margin:7px 0 8px;gap:4px}
-.ratingStars.compact .ratingFilled,.ratingStars.compact .ratingEmpty{font-size:15px}
+.ratingStars.compact .ratingFilled,.ratingStars.compact .ratingEmpty{font-size:19px}
 .ratingStars.compact strong{font-size:12px}
 .ratingStars.compact em{font-size:11px}
