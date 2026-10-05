@@ -29,13 +29,15 @@ function normalizeReviews(reviews){
   if(!Array.isArray(reviews)) return [];
   const seen=new Set();
   return reviews.map((r,i)=>{
-    const text=String(r?.text||"").trim();
-    if(text.length<10) return null;
+    const text=String(r?.text||"").trim().replace(/\s+/g," ");
+    if(text.length<8) return null;
+    if(/official st|official store|\d[\d,]*\+?\s*sold\b|all from verified purchases|sort by default|related items|you may also like|more to love/i.test(text)) return null;
+    const ratingNum=Number(r?.rating);
+    const rating=Number.isFinite(ratingNum)&&ratingNum>=1&&ratingNum<=5?ratingNum:null;
+    if(!rating) return null;
     const key=text.toLowerCase();
     if(seen.has(key)) return null;
     seen.add(key);
-    const ratingNum=Number(r?.rating);
-    const rating=Number.isFinite(ratingNum)&&ratingNum>=1&&ratingNum<=5?ratingNum:null;
     const images=Array.isArray(r?.images)?r.images.filter(Boolean).slice(0,6):[];
     const date=String(r?.date||"").trim();
     const reviewer_name=String(r?.reviewer_name||r?.reviewerName||r?.name||"").trim();
@@ -214,7 +216,11 @@ export default function ProductConfigurator({ product, description, keywords=[],
             <div className="productReviewMeta">
               <div>
                 {r.reviewer_name ? <strong className="reviewerName">{r.reviewer_name}</strong> : null}
-                {r.rating ? <strong className="reviewStars" aria-label={`${r.rating} out of 5 stars`}>{"★".repeat(Math.round(r.rating))}<span>{"★".repeat(Math.max(0,5-Math.round(r.rating)))}</span></strong> : null}
+                <strong className="reviewStars" aria-label={`${r.rating} out of 5 stars`}>
+  <span className="filledStars">{"★".repeat(Math.round(r.rating))}</span>
+  <span className="emptyStars">{"★".repeat(Math.max(0,5-Math.round(r.rating)))}</span>
+  <em>{Number(r.rating).toFixed(1)}</em>
+</strong>
               </div>
               {r.date ? <time>{r.date}</time> : null}
             </div>
