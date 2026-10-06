@@ -53,7 +53,8 @@ function normalizeVariants(variants, selectedColor, fallbackImage){
     if(typeof v==="string") return {name:prettifyOptionName(v),rawName:v,image:"",selected:false,key:v+"-"+i};
     const rawName=String(v?.name||v?.label||v?.value||"").trim();
     const image=String(v?.image||v?.image_url||v?.img||"").trim();
-    return {name:prettifyOptionName(rawName),rawName,image,selected:!!v?.selected,key:(rawName||"option")+"-"+i};
+    const group=String(v?.group||v?.group_name||v?.groupName||v?.property||v?.property_name||v?.propertyName||v?.option_group||v?.optionGroup||"").trim();
+    return {name:prettifyOptionName(rawName),rawName,image,group,selected:!!v?.selected,key:(group||"option")+"-"+(rawName||"option")+"-"+i};
   }).filter(v=>v.rawName) : [];
   if(!list.length && selectedColor) return [{name:prettifyOptionName(selectedColor),rawName:selectedColor,image:fallbackImage||"",selected:true,key:"fallback"}];
   return list;
@@ -80,22 +81,61 @@ export default function ProductConfigurator({ product, description, keywords=[],
   const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
   const reviews = useMemo(()=>normalizeReviews(product.reviews),[product.reviews]);
   const variants = useMemo(()=>normalizeVariants(product.variants,product.selected_color,images[0]),[product.variants,product.selected_color,images]);
-  const initialVariant = variants.find(v=>v.selected) || variants.find(v=>v.rawName===product.selected_color) || variants[0] || null;
-  const [selectedVariant,setSelectedVariant] = useState(initialVariant);
-  const [active,setActive] = useState({type:"image",value:images[0] || initialVariant?.image || ""});
+
+  const optionGroups = useMemo(()=>{
+    const groups=[];
+    const byName=new Map();
+    for(const v of variants){
+      const name=String(v.group||"").trim() || "Color / Style";
+      if(!byName.has(name)){
+        const g={name,options:[]};
+        byName.set(name,g);
+        groups.push(g);
+      }
+      byName.get(name).options.push(v);
+    }
+    return groups;
+  },[variants]);
+
+  const [selectedOptions,setSelectedOptions] = useState(()=>{
+    const initial={};
+    for(const g of optionGroups){
+      initial[g.name] =
+        g.options.find(v=>v.selected) ||
+        g.options.find(v=>v.rawName===product.selected_color) ||
+        g.options[0] ||
+        null;
+    }
+    return initial;
+  });
+
+  const selectedVariant =
+    optionGroups.map(g=>selectedOptions[g.name]).find(v=>v?.image) ||
+    optionGroups.map(g=>selectedOptions[g.name]).find(Boolean) ||
+    null;
+
+  const [active,setActive] = useState({type:"image",value:images[0] || selectedVariant?.image || ""});
   const displayTitle = optionAwareTitle(product.title, selectedVariant);
 
-  const selectVariant=(v)=>{
-    setSelectedVariant(v);
+  const selectVariant=(groupName,v)=>{
+    setSelectedOptions(prev=>({...prev,[groupName]:v}));
     if(v.image) setActive({type:"image",value:v.image});
   };
 
+  const selectedOptionList = optionGroups
+    .map(g=>({group:g.name,value:selectedOptions[g.name]}))
+    .filter(x=>x.value);
+
   const addItem=()=>{
-    if(variants.length && !selectedVariant) return;
+    if(optionGroups.length && selectedOptionList.length!==optionGroups.length) return;
+    const optionText = selectedOptionList.map(x=>
+      x.group==="Color / Style" ? x.value.name : `${x.group}: ${x.value.name}`
+    ).join(" / ");
     add({
       ...product,
       title:displayTitle,
-      selectedVariant:selectedVariant ? {name:selectedVariant.name,image:selectedVariant.image||""} : null,
+      selectedVariant:optionText ? {name:optionText,image:selectedVariant?.image||""} : null,
+      selectedOptions:selectedOptionList.map(x=>({group:x.group,name:x.value.name,rawName:x.value.rawName,image:x.value.image||""})),
       cartImage:selectedVariant?.image || images[0] || ""
     });
   };
@@ -165,18 +205,18 @@ export default function ProductConfigurator({ product, description, keywords=[],
         <RatingStars reviews={product.reviews||[]} rating={product.rating} />
         <div className="fashionPrice">${Number(product.retail_price||0).toFixed(2)}</div>
 
-        {variants.length ? <section className="fashionOptions">
+        {optionGroups.map(group=><section className="fashionOptions" key={group.name}>
           <div className="fashionOptionHeading">
-            <strong>Color / Style</strong>
-            <span>{selectedVariant?.name || "Select an option"}</span>
+            <strong>{group.name}</strong>
+            <span>{selectedOptions[group.name]?.name || "Select an option"}</span>
           </div>
           <div className="fashionSwatches">
-            {variants.map(v=><button type="button" key={v.key} className={"fashionSwatch"+(selectedVariant?.key===v.key?" selected":"")} onClick={()=>selectVariant(v)} title={v.name}>
+            {group.options.map(v=><button type="button" key={v.key} className={"fashionSwatch"+(selectedOptions[group.name]?.key===v.key?" selected":"")} onClick={()=>selectVariant(group.name,v)} title={v.name}>
               {v.image ? <img src={v.image} alt={v.name}/> : <span className="swatchFallback">{v.name}</span>}
               <small>{v.name}</small>
             </button>)}
           </div>
-        </section> : null}
+        </section>)}
 
         <button className="fashionAdd" onClick={addItem}>ADD TO CART</button>
 
@@ -217,7 +257,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
         <div className="detailsGrid">
           <div><span>Category</span><strong>{product.category || "—"}</strong></div>
           <div><span>Type</span><strong>{product.subcategory || "—"}</strong></div>
-          {selectedVariant?.name ? <div><span>Style</span><strong>{selectedVariant.name}</strong></div> : null}
+          {selectedOptionList.length ? <div><span>Options</span><strong>{selectedOptionList.map(x=>x.group==="Color / Style"?x.value.name:`${x.group}: ${x.value.name}`).join(" / ")}</strong></div> : null}
         </div>
       </div>
 
