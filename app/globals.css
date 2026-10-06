@@ -122,3 +122,19 @@ footer{margin-top:50px;padding:30px 0;border-top:1px solid #eee2e9;color:#7a6d76
 .ratingStars.compact .ratingFilled,.ratingStars.compact .ratingEmpty{font-size:19px}
 .ratingStars.compact strong{font-size:12px}
 .ratingStars.compact em{font-size:11px}
+
+
+/* Main navigation subcategories */
+.navGroup{position:relative;display:flex;align-items:center}
+.navGroup>a{display:block;padding:10px 0}
+.navDropdown{position:absolute;top:100%;left:-14px;min-width:190px;background:#fff;border:1px solid #eadfe7;border-radius:12px;padding:8px;box-shadow:0 12px 30px rgba(40,20,35,.12);display:none;z-index:40}
+.navDropdown a{display:block;padding:9px 11px;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap}
+.navDropdown a:hover{background:#faf4f8}
+.navGroup:hover .navDropdown,.navGroup:focus-within .navDropdown{display:block}
+.categoryBreadcrumb{display:flex;gap:8px;align-items:center;font-size:13px;color:#7c6d77;margin-bottom:12px}
+.categoryBreadcrumb a{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:760px){
+  .nav{width:100%;gap:10px}
+  .navGroup{display:block}
+  .navDropdown{display:none!important}
+}
