@@ -269,9 +269,9 @@ export default function ProductConfigurator({ product, description, keywords=[],
       <div className="detailsBlock specsBlock">
         <h2>Why You'll Love It</h2>
         <ul>
-          <li>Easy to style with everyday and occasion looks</li>
-          <li>Lightweight fashion accessory design</li>
-          <li>Multiple styles available when shown above</li>
+          <li>Curated for a beautiful kitchen, dining table or home</li>
+          <li>Designed to add practical function with decorative appeal</li>
+          <li>Multiple colors, sizes or styles available when shown above</li>
           <li>Secure checkout through TMBTY</li>
         </ul>
       </div>
@@ -305,7 +305,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
       {relatedProducts.length ? <div className="relatedProducts">
         <div className="relatedHeader">
           <h2>You May Also Like</h2>
-          <span>More styles picked for you</span>
+          <span>More kitchen & dining finds picked for you</span>
         </div>
         <div className="relatedGrid">
           {relatedProducts.map(r=><a className="relatedCard" href={`/products/${r.slug}`} key={r.id}>
