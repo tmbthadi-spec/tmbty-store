@@ -48,7 +48,11 @@ export default function ProductRemover(){
       const d=await api(t);
       setProducts(d.products||[]);
       setStatus("Ready. Found "+(d.products||[]).length+" products.");
-    }catch(e){setStatus("Please reconnect: "+e.message)}
+    }catch(e){
+      localStorage.removeItem("tmbty-remove-token");
+      setToken("");
+      setStatus("Session expired. Please sign in again.");
+    }
   }
 
   async function removeProduct(p){
@@ -65,8 +69,15 @@ export default function ProductRemover(){
   }
 
   const filtered=useMemo(()=>{
-    const s=q.trim().toLowerCase();
+    let s=q.trim().toLowerCase();
     if(!s)return products;
+    try{
+      if(/^https?:\/\//i.test(s)){
+        const u=new URL(s);
+        const parts=u.pathname.split("/").filter(Boolean);
+        if(parts[0]==="products"&&parts[1]) s=decodeURIComponent(parts[1]).toLowerCase();
+      }
+    }catch{}
     return products.filter(p=>[p.title,p.slug,p.category,p.subcategory,p.status].some(v=>String(v||"").toLowerCase().includes(s)));
   },[q,products]);
 
@@ -80,12 +91,14 @@ export default function ProductRemover(){
       <button onClick={login} style={primary}>Connect</button>
     </section>:<>
       <section style={box}>
-        <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search product title, category or slug…" style={{...input,minWidth:320}}/>
+        <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Paste a TMBTY product link, title, category or slug…" style={{...input,minWidth:360}}/>
         <button onClick={()=>load()} style={secondary}>Reload</button>
+        <button onClick={()=>{localStorage.removeItem("tmbty-remove-token");setToken("");setProducts([]);setStatus("Signed out.");}} style={secondary}>Sign out</button>
         <div style={{width:"100%",marginTop:8}}>{status}</div>
       </section>
 
       <div style={{marginTop:18,display:"grid",gap:12}}>
+        {!filtered.length?<div style={{padding:18,border:"1px solid #eadfe7",borderRadius:12,background:"#fff"}}>No matching product found. Paste the full TMBTY product link or search by title.</div>:null}
         {filtered.map(p=><div key={p.id} style={{display:"grid",gridTemplateColumns:"72px 1fr auto",gap:14,alignItems:"center",border:"1px solid #eadfe7",borderRadius:12,padding:12,background:"#fff"}}>
           <div style={{width:72,height:72,background:"#faf7f9",overflow:"hidden",borderRadius:8}}>
             {p.images?.[0]?<img src={p.images[0]} alt="" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:null}
