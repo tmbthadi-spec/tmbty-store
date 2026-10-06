@@ -6,14 +6,14 @@ import CheckoutReturn from "../components/CheckoutReturn";
 
 export const metadata = {
   metadataBase: new URL("https://tmbty.com"),
-  title: { default: "TMBTY — Jewelry, Handbags, Outfits & Accessories", template: "%s | TMBTY" },
-  description: "Shop stylish jewelry, handbags, outfits and accessories at TMBTY.",
+  title: { default: "TMBTY — Accessories, Handbags & Outfits", template: "%s | TMBTY" },
+  description: "Shop stylish accessories, handbags and outfits at TMBTY.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: "TMBTY",
-    title: "TMBTY — Jewelry, Handbags, Outfits & Accessories",
-    description: "Shop stylish jewelry, handbags, outfits and accessories at TMBTY."
+    title: "TMBTY — Accessories, Handbags & Outfits",
+    description: "Shop stylish accessories, handbags and outfits at TMBTY."
   }
 };
 
