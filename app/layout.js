@@ -22,10 +22,41 @@ export default function RootLayout({ children }) {
     <header><div className="wrap top">
       <a className="brand" href="/">TMBTY</a>
       <nav className="nav">
-        <a href="/category/Jewelry">Jewelry</a>
-        <a href="/category/Handbags">Handbags</a>
-        <a href="/category/Outfits">Outfits</a>
-        <a href="/category/Accessories">Accessories</a>
+        <div className="navGroup"><a href="/category/Jewelry">Jewelry</a><div className="navDropdown">
+          <a href="/category/Jewelry/Earrings">Earrings</a>
+          <a href="/category/Jewelry/Necklace">Necklaces</a>
+          <a href="/category/Jewelry/Bracelet">Bracelets</a>
+          <a href="/category/Jewelry/Ring">Rings</a>
+          <a href="/category/Jewelry/Jewelry%20Set">Jewelry Sets</a>
+          <a href="/category/Jewelry/Anklet">Anklets</a>
+          <a href="/category/Jewelry/Brooch">Brooches</a>
+        </div></div>
+        <div className="navGroup"><a href="/category/Handbags">Handbags</a><div className="navDropdown">
+          <a href="/category/Handbags/Crossbody%20Bag">Crossbody Bags</a>
+          <a href="/category/Handbags/Shoulder%20Bag">Shoulder Bags</a>
+          <a href="/category/Handbags/Tote%20Bag">Tote Bags</a>
+          <a href="/category/Handbags/Clutch">Clutches</a>
+          <a href="/category/Handbags/Wallet">Wallets</a>
+          <a href="/category/Handbags/Backpack">Backpacks</a>
+          <a href="/category/Handbags/Handbag%20Set">Bag Sets</a>
+        </div></div>
+        <div className="navGroup"><a href="/category/Outfits">Outfits</a><div className="navDropdown">
+          <a href="/category/Outfits/Dress">Dresses</a>
+          <a href="/category/Outfits/Two-Piece%20Set">Two-Piece Sets</a>
+          <a href="/category/Outfits/Top">Tops</a>
+          <a href="/category/Outfits/Skirt">Skirts</a>
+          <a href="/category/Outfits/Pants">Pants</a>
+          <a href="/category/Outfits/Jumpsuit">Jumpsuits</a>
+          <a href="/category/Outfits/Sweater">Sweaters</a>
+          <a href="/category/Outfits/Jacket">Jackets</a>
+        </div></div>
+        <div className="navGroup"><a href="/category/Accessories">Accessories</a><div className="navDropdown">
+          <a href="/category/Accessories/Hair%20Claw">Hair Claws</a>
+          <a href="/category/Accessories/Hair%20Clip">Hair Clips</a>
+          <a href="/category/Accessories/Scrunchie">Scrunchies</a>
+          <a href="/category/Accessories/Headband">Headbands</a>
+          <a href="/category/Accessories/Accessory%20Set">Accessory Sets</a>
+        </div></div>
       </nav>
       <CartButton />
     </div></header>
