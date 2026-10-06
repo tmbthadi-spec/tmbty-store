@@ -59,6 +59,21 @@ function normalizeVariants(variants, selectedColor, fallbackImage){
   return list;
 }
 
+function optionAwareTitle(baseTitle,selectedVariant){
+  const base=String(baseTitle||"").trim();
+  const option=String(selectedVariant?.name||"").trim();
+  if(!option) return base;
+
+  const colorWords=["black","white","cream","ivory","beige","brown","tan","gray","grey","silver","gold","golden","rose gold","red","rose red","burgundy","wine","pink","hot pink","blush","fuchsia","orange","yellow","mustard","green","olive","lime","mint","emerald","teal","turquoise","blue","navy","sky blue","royal blue","purple","lavender","lilac","violet","multicolor","colorful","clear"];
+  const isColor=colorWords.some(x=>new RegExp("^"+x.replace(/ /g,"\\\\s+")+"$","i").test(option));
+  if(isColor){
+    const cleaned=base.replace(new RegExp("^("+colorWords.sort((a,b)=>b.length-a.length).map(x=>x.replace(/ /g,"\\\\s+")).join("|")+")\\\\s+","i"),"");
+    return `${option.replace(/\\b\\w/g,ch=>ch.toUpperCase())} ${cleaned}`.trim();
+  }
+  if(/mixed media/i.test(option)) return `Mixed Media ${base.replace(/^(?:[A-Za-z]+(?:\\s+[A-Za-z]+)?\\s+)?/,"")||base}`;
+  return base;
+}
+
 export default function ProductConfigurator({ product, description, keywords=[], relatedProducts=[] }) {
   const { add } = useCart();
   const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
@@ -67,6 +82,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
   const initialVariant = variants.find(v=>v.selected) || variants.find(v=>v.rawName===product.selected_color) || variants[0] || null;
   const [selectedVariant,setSelectedVariant] = useState(initialVariant);
   const [active,setActive] = useState({type:"image",value:images[0] || initialVariant?.image || ""});
+  const displayTitle = optionAwareTitle(product.title, selectedVariant);
 
   const selectVariant=(v)=>{
     setSelectedVariant(v);
@@ -77,13 +93,14 @@ export default function ProductConfigurator({ product, description, keywords=[],
     if(variants.length && !selectedVariant) return;
     add({
       ...product,
+      title:displayTitle,
       selectedVariant:selectedVariant ? {name:selectedVariant.name,image:selectedVariant.image||""} : null,
       cartImage:selectedVariant?.image || images[0] || ""
     });
   };
 
   const productUrl = typeof window !== "undefined" ? window.location.href : "";
-  const shareText = `${product.title} - TMBTY`;
+  const shareText = `${displayTitle} - TMBTY`;
   const shareImage = images[0] || selectedVariant?.image || "";
 
   const pinMedia = (mediaUrl) => {
@@ -117,7 +134,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
             <button className={"fashionThumb"+(active.type==="image"&&active.value===u?" active":"")} onClick={()=>setActive({type:"image",value:u})}>
               <img src={u} alt={i===0?`${product.title} cover`:`${product.title} image ${i+1}`}/>
             </button>
-            <button type="button" className="pinItThumb" onClick={(e)=>{e.stopPropagation();pinMedia(u)}} aria-label={`Pin ${product.title} image ${i+1} to Pinterest`}>Pin it</button>
+            <button type="button" className="pinItThumb" onClick={(e)=>{e.stopPropagation();pinMedia(u)}} aria-label={`Pin ${displayTitle} image ${i+1} to Pinterest`}>Pin it</button>
           </div>)}
         </div>
         <div className="fashionMainMedia">
@@ -127,7 +144,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
                 <button type="button" className="pinItMain" onClick={()=>pinMedia(images[0]||"")} aria-label="Pin this product to Pinterest">Pin it</button>
               </>
             : active.value ? <>
-                <img src={active.value} alt={product.title}/>
+                <img src={active.value} alt={displayTitle}/>
                 <button type="button" className="pinItMain" onClick={()=>pinMedia(active.value)} aria-label="Pin this image to Pinterest">Pin it</button>
               </> : <div className="mediaEmpty">TMBTY</div>}
         </div>
@@ -135,7 +152,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
 
       <aside className="fashionInfo">
         <div className="fashionCategory">{product.category}{product.subcategory ? ` / ${product.subcategory}` : ""}</div>
-        <h1>{product.title}</h1>
+        <h1>{displayTitle}</h1>
         <RatingStars reviews={product.reviews||[]} rating={product.rating} />
         <div className="fashionPrice">${Number(product.retail_price||0).toFixed(2)}</div>
 
