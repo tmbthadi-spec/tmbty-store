@@ -61,6 +61,7 @@ function normalizeVariants(variants, selectedColor, fallbackImage){
 
 function optionAwareTitle(baseTitle,selectedVariant){
   const base=String(baseTitle||"").trim();
+  const baseCore=base.split(/[–—|]/)[0].trim();
   const option=String(selectedVariant?.name||"").trim();
   if(!option) return base;
 
