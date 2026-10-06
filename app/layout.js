@@ -22,15 +22,6 @@ export default function RootLayout({ children }) {
     <header><div className="wrap top">
       <a className="brand" href="/">TMBTY</a>
       <nav className="nav">
-        <div className="navGroup"><a href="/category/Jewelry">Jewelry</a><div className="navDropdown">
-          <a href="/category/Jewelry/Earrings">Earrings</a>
-          <a href="/category/Jewelry/Necklace">Necklaces</a>
-          <a href="/category/Jewelry/Bracelet">Bracelets</a>
-          <a href="/category/Jewelry/Ring">Rings</a>
-          <a href="/category/Jewelry/Jewelry%20Set">Jewelry Sets</a>
-          <a href="/category/Jewelry/Anklet">Anklets</a>
-          <a href="/category/Jewelry/Brooch">Brooches</a>
-        </div></div>
         <div className="navGroup"><a href="/category/Handbags">Handbags</a><div className="navDropdown">
           <a href="/category/Handbags/Crossbody%20Bag">Crossbody Bags</a>
           <a href="/category/Handbags/Shoulder%20Bag">Shoulder Bags</a>
