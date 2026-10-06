@@ -4,18 +4,19 @@ import RatingStars from "../../../components/RatingStars";
 export const dynamic = "force-dynamic";
 
 const SUBCATEGORIES={
-  Handbags:["Crossbody Bag","Shoulder Bag","Tote Bag","Clutch","Wallet","Backpack","Handbag Set"],
-  Outfits:["Dress","Two-Piece Set","Top","Skirt","Pants","Jumpsuit","Sweater","Jacket"],
-  Accessories:["Hair Claw","Hair Clip","Scrunchie","Headband","Accessory Set"]
+  "Tea & Coffee":["Tea Set","Coffee Set","Cup & Saucer","Mug","Teapot"],
+  "Dinnerware":["Dinnerware Set","Plate","Bowl","Serving Set"],
+  "Kitchen Storage":["Canister Set","Storage Jar","Organizer"],
+  "Kitchenware":["Serving Tray","Cake Stand","Kitchen Accessory"],
+  "Home Decor":["Table Decor","Decorative Accent"]
 };
-
 
 export async function generateMetadata({ params }) {
   const { category } = await params;
   const name = decodeURIComponent(category);
   return {
-    title:`${name} — Shop TMBTY`,
-    description:`Shop ${name.toLowerCase()} at TMBTY. Discover stylish, curated pieces with fresh colors and details.`,
+    title:`${name} — TMBTY Kitchen & Dining`,
+    description:`Shop ${name.toLowerCase()} at TMBTY. Curated kitchen, dining and home finds chosen for beauty, usefulness and everyday living.`,
     alternates:{canonical:`/category/${encodeURIComponent(name)}`}
   };
 }
@@ -26,7 +27,7 @@ export default async function CategoryPage({ params }) {
   const products = await getProductsByCategory(name);
   return <main className="wrap" style={{paddingTop:30}}>
     <h1 style={{fontSize:38}}>{name}</h1>
-    <p className="muted">Shop TMBTY {name.toLowerCase()} selected for style, color and everyday wear.</p>
+    <p className="muted">Shop curated TMBTY {name.toLowerCase()} finds for a beautiful, practical home.</p>
     {SUBCATEGORIES[name]?.length ? <div className="subcategoryLinks">
       {SUBCATEGORIES[name].map(sub=><a key={sub} href={`/category/${encodeURIComponent(name)}/${encodeURIComponent(sub)}`}>{sub}</a>)}
     </div> : null}
