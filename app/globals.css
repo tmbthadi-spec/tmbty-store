@@ -138,3 +138,7 @@ footer{margin-top:50px;padding:30px 0;border-top:1px solid #eee2e9;color:#7a6d76
   .navGroup{display:block}
   .navDropdown{display:none!important}
 }
+
+.subcategoryLinks{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0 26px}
+.subcategoryLinks a{border:1px solid #eadfe7;background:#fff;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:700}
+.subcategoryLinks a:hover{background:#faf4f8;border-color:#d8c4d1}
