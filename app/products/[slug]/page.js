@@ -32,6 +32,10 @@ export default async function ProductPage({ params }) {
 
   const keywords = Array.isArray(p.seo_keywords) ? p.seo_keywords.filter(Boolean).slice(0,6) : [];
   const relatedProducts = await getRelatedProducts(p.id,p.category,p.subcategory,8);
+  const validReviews=(Array.isArray(p.reviews)?p.reviews:[]).filter(r=>Number(r?.rating)>=1&&Number(r?.rating)<=5&&String(r?.text||"").trim());
+  const averageRating=validReviews.length ? validReviews.reduce((a,r)=>a+Number(r.rating),0)/validReviews.length : null;
+  const variantNames=(Array.isArray(p.variants)?p.variants:[]).map(v=>String(v?.name||v?.source_name||"").trim()).filter(Boolean);
+
   const schema = {
     "@context":"https://schema.org",
     "@type":"Product",
@@ -40,12 +44,31 @@ export default async function ProductPage({ params }) {
     image:p.images || [],
     sku:p.id,
     category:[p.category,p.subcategory].filter(Boolean).join(" > "),
+    additionalProperty:variantNames.slice(0,20).map(v=>({
+      "@type":"PropertyValue",
+      name:"Available style",
+      value:v
+    })),
     offers:{
       "@type":"Offer",
       priceCurrency:"USD",
       price:Number(p.retail_price||0).toFixed(2),
-      url:`https://tmbty.com/products/${p.slug}`
-    }
+      url:`https://tmbty.com/products/${p.slug}`,
+      availability:"https://schema.org/InStock"
+    },
+    ...(averageRating ? {
+      aggregateRating:{
+        "@type":"AggregateRating",
+        ratingValue:Number(averageRating.toFixed(2)),
+        reviewCount:validReviews.length
+      },
+      review:validReviews.slice(0,5).map(r=>({
+        "@type":"Review",
+        author:{"@type":"Person",name:/aliexpress/i.test(String(r.reviewer_name||""))?"Verified Customer":(r.reviewer_name||"Verified Customer")},
+        reviewRating:{"@type":"Rating",ratingValue:Number(r.rating),bestRating:5},
+        reviewBody:String(r.text||"")
+      }))
+    }:{})
   };
 
   return <main className="wrap productPage">
