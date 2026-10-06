@@ -102,23 +102,31 @@ export default function ProductConfigurator({ product, description, keywords=[],
 
   const productUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareText = `${displayTitle} - TMBTY`;
+  const cleanDescription = String(description||"").replace(/\s+/g," ").trim();
+  const pinKeywords = (Array.isArray(keywords)?keywords:[]).filter(Boolean).slice(0,6).join(", ");
+  const pinterestDescription = [
+    displayTitle,
+    cleanDescription,
+    pinKeywords ? `Shop/search: ${pinKeywords}` : "",
+    "TMBTY"
+  ].filter(Boolean).join(" | ").slice(0,500);
   const shareImage = images[0] || selectedVariant?.image || "";
 
   const pinMedia = (mediaUrl) => {
     const url = encodeURIComponent(productUrl);
-    const text = encodeURIComponent(shareText);
+    const text = encodeURIComponent(pinterestDescription);
     const media = encodeURIComponent(mediaUrl || images[0] || "");
     window.open(`https://www.pinterest.com/pin/create/button/?url=${url}&media=${media}&description=${text}`,"_blank","noopener,noreferrer");
   };
 
   const openShare = (type) => {
     const url = encodeURIComponent(productUrl);
-    const text = encodeURIComponent(shareText);
+    const text = encodeURIComponent(pinterestDescription);
     const media = encodeURIComponent(shareImage);
     if(type==="pinterest") return window.open(`https://www.pinterest.com/pin/create/button/?url=${url}&media=${media}&description=${text}`,"_blank","noopener,noreferrer");
     if(type==="facebook") return window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`,"_blank","noopener,noreferrer");
     if(navigator.share){
-      return navigator.share({title:product.title,text:shareText,url:productUrl}).catch(()=>{});
+      return navigator.share({title:displayTitle,text:pinterestDescription,url:productUrl}).catch(()=>{});
     }
     navigator.clipboard?.writeText(productUrl);
     alert("Product link copied. Paste it into your social post.");
