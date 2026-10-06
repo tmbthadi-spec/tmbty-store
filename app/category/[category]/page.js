@@ -4,7 +4,6 @@ import RatingStars from "../../../components/RatingStars";
 export const dynamic = "force-dynamic";
 
 const SUBCATEGORIES={
-  Jewelry:["Earrings","Necklace","Bracelet","Ring","Jewelry Set","Anklet","Brooch"],
   Handbags:["Crossbody Bag","Shoulder Bag","Tote Bag","Clutch","Wallet","Backpack","Handbag Set"],
   Outfits:["Dress","Two-Piece Set","Top","Skirt","Pants","Jumpsuit","Sweater","Jacket"],
   Accessories:["Hair Claw","Hair Clip","Scrunchie","Headband","Accessory Set"]
