@@ -8,19 +8,40 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const p = await getProductBySlug(slug);
   if (!p) return {};
-  const description = (p.meta_description || p.description || "").replace(/#\w+/g,"").slice(0,160);
-  const keywords = Array.isArray(p.seo_keywords) ? p.seo_keywords.slice(0,10) : [];
+  const keywords = Array.isArray(p.seo_keywords) ? p.seo_keywords.filter(Boolean).slice(0,12) : [];
+  const options = (Array.isArray(p.variants)?p.variants:[])
+    .map(v=>String(v?.name||v?.source_name||"").trim())
+    .filter(Boolean)
+    .slice(0,8);
+  const baseDescription = (p.description || p.meta_description || "").replace(/#\w+/g,"").replace(/\s+/g," ").trim();
+  const metaDescription = (p.meta_description || baseDescription || "").replace(/#\w+/g,"").replace(/\s+/g," ").trim().slice(0,160);
+  const pinterestDescription = [
+    baseDescription,
+    options.length ? `Available styles/colors: ${options.join(", ")}.` : "",
+    keywords.length ? `Popular searches: ${keywords.slice(0,8).join(", ")}.` : ""
+  ].filter(Boolean).join(" ").slice(0,500);
+
   return {
     title: p.title,
-    description,
+    description: metaDescription,
     keywords,
     alternates: { canonical: `/products/${p.slug}` },
     openGraph: {
       type:"website",
+      siteName:"TMBTY",
       title:p.title,
-      description,
+      description:pinterestDescription || metaDescription,
       url:`/products/${p.slug}`,
       images:p.images?.[0] ? [{url:p.images[0],alt:`${p.title} product cover`}] : []
+    },
+    twitter:{
+      card:"summary_large_image",
+      title:p.title,
+      description:pinterestDescription || metaDescription,
+      images:p.images?.[0] ? [p.images[0]] : []
+    },
+    other:{
+      "pinterest-rich-pin":"true"
     }
   };
 }
