@@ -283,16 +283,6 @@ export default function ProductConfigurator({ product, description, keywords=[],
         </> : null}
       </div>
 
-      <div className="detailsBlock specsBlock">
-        <h2>Why You'll Love It</h2>
-        <ul>
-          <li>Curated for a beautiful kitchen, dining table or home</li>
-          <li>Designed to add practical function with decorative appeal</li>
-          <li>Multiple colors, sizes or styles available when shown above</li>
-          <li>Secure checkout through TMBTY</li>
-        </ul>
-      </div>
-
       {reviews.length ? <div className="productReviews">
         <div className="productReviewsHeader">
           <h2>Product Reviews</h2>
