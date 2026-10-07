@@ -155,3 +155,5 @@ footer{margin-top:50px;padding:30px 0;border-top:1px solid #eee2e9;color:#7a6d76
   margin-bottom:7px;
   letter-spacing:.01em;
 }
+
+.adminAiPage{min-height:70vh;padding:60px 20px;display:flex;justify-content:center}.adminAiCard{width:min(850px,100%);background:#fff;border:1px solid #e8e3dc;border-radius:20px;padding:32px;box-shadow:0 12px 40px rgba(0,0,0,.06)}.adminAiKicker{font-size:11px;letter-spacing:2px;font-weight:700;opacity:.55}.adminAiCard h1{margin:8px 0}.adminAiCard textarea{width:100%;box-sizing:border-box;border:1px solid #ddd5cb;border-radius:14px;padding:15px;font:inherit;resize:vertical;margin:20px 0}.adminAiActions{display:flex;gap:10px;flex-wrap:wrap}.adminAiActions button,.adminAiExamples button{border:1px solid #ddd5cb;background:#fff;border-radius:10px;padding:10px 14px;cursor:pointer}.adminAiActions button:last-child{background:#111;color:#fff}.adminAiActions button:disabled{opacity:.45}.adminAiExamples{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:22px;font-size:13px}.adminAiResult{white-space:pre-wrap;background:#f7f5f2;border-radius:12px;padding:18px;margin-top:24px;font-family:inherit;font-size:14px}
