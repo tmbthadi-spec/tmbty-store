@@ -189,11 +189,17 @@ export default function ProductConfigurator({ product, description, keywords=[],
         <div className="fashionMainMedia">
           {active.type==="video" && product.video_url
             ? <>
-                <video controls autoPlay playsInline poster={images[0]||undefined} src={product.video_url}/>
+                <div className="mediaWithWatermark">
+                  <video controls autoPlay playsInline poster={images[0]||undefined} src={product.video_url}/>
+                  <div className="tmbtyMediaWatermark" aria-hidden="true"><strong>TMBTY</strong><span>tmbty.com</span></div>
+                </div>
                 <button type="button" className="pinItMain" onClick={()=>pinMedia(images[0]||"")} aria-label="Pin this product to Pinterest">Pin it</button>
               </>
             : active.value ? <>
-                <img src={active.value} alt={displayTitle}/>
+                <div className="mediaWithWatermark">
+                  <img src={active.value} alt={displayTitle}/>
+                  <div className="tmbtyMediaWatermark" aria-hidden="true"><strong>TMBTY</strong><span>tmbty.com</span></div>
+                </div>
                 <button type="button" className="pinItMain" onClick={()=>pinMedia(active.value)} aria-label="Pin this image to Pinterest">Pin it</button>
               </> : <div className="mediaEmpty">TMBTY</div>}
         </div>
