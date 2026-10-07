@@ -264,6 +264,23 @@ export default function ProductConfigurator({ product, description, keywords=[],
       <div className="detailsBlock descriptionBlock">
         <h2>Description</h2>
         <p>{description}</p>
+        {keywords.length ? <>
+          <div className="keywordSection">
+            <strong>Search Keywords</strong>
+            <div className="seoFooterTags">
+              {keywords.slice(0,12).map(k=><span key={"seo-"+k}>{k}</span>)}
+            </div>
+          </div>
+          <div className="keywordSection">
+            <strong>Pinterest Keywords</strong>
+            <div className="seoFooterTags">
+              {keywords.slice(0,10).map(k=><span key={"pin-"+k}>#{String(k).replace(/[^a-z0-9]+/gi,"")}</span>)}
+              <span>#TMBTY</span>
+              <span>#TMBTYKitchen</span>
+              <span>#TMBTYKitchenAndDining</span>
+            </div>
+          </div>
+        </> : null}
       </div>
 
       <div className="detailsBlock specsBlock">
@@ -321,9 +338,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
         </div>
       </div> : null}
 
-      {keywords.length ? <div className="seoFooterTags" aria-label="Product search terms">
-        {keywords.map(k=><span key={k}>{k}</span>)}
-      </div> : null}
+
     </section>
   </>;
 }
