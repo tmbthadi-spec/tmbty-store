@@ -274,7 +274,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
           <div className="keywordSection">
             <strong>Pinterest Keywords</strong>
             <div className="seoFooterTags">
-              {keywords.slice(0,10).map(k=><span key={"pin-"+k}>#{String(k).replace(/[^a-z0-9]+/gi,"")}</span>)}
+              {keywords.slice(0,14).map(k=>String(k).replace(/[^a-z0-9]+/gi,"")).filter(k=>k.length>=3).map(k=><span key={"pin-"+k}>#{k}</span>)}
               <span>#TMBTY</span>
               <span>#TMBTYKitchen</span>
               <span>#TMBTYKitchenAndDining</span>
