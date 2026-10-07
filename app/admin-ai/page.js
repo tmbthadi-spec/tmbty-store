@@ -1,0 +1,8 @@
+"use client";
+import {useState} from "react";
+export default function AdminAI(){
+ const [cmd,setCmd]=useState(""); const [result,setResult]=useState(""); const [busy,setBusy]=useState(false);
+ async function run(preview){setBusy(true);setResult("");try{const r=await fetch("/api/tmbty-ai",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({command:cmd,preview})});const j=await r.json();setResult(j.message||"Done.");}catch(e){setResult("Could not connect to TMBTY AI Manager.");}setBusy(false);}
+ const examples=["Change all prices to original price + $10","Change shipping ETA to 7–10 days","Rename Tea & Coffee to Tea & Coffee Sets"];
+ return <main className="adminAiPage"><div className="adminAiCard"><div className="adminAiKicker">TMBTY STORE AI</div><h1>AI Store Manager</h1><p className="muted">Tell TMBTY what you want changed. Preview first, then apply.</p><textarea value={cmd} onChange={e=>setCmd(e.target.value)} placeholder="Example: Change all prices to original price + $10" rows={5}/><div className="adminAiActions"><button disabled={!cmd||busy} onClick={()=>run(true)}>Preview change</button><button disabled={!cmd||busy} onClick={()=>run(false)}>Apply change</button></div><div className="adminAiExamples"><strong>Try:</strong>{examples.map(x=><button key={x} onClick={()=>setCmd(x)}>{x}</button>)}</div>{result&&<pre className="adminAiResult">{result}</pre>}</div></main>;
+}
