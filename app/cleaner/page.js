@@ -30,7 +30,7 @@ function safeSuggestions(product) {
   const changes = [];
   for (const v of Array.isArray(product.variants) ? product.variants : []) {
     const before = String(v?.name || "");
-    const after = before.trim().replace(/(\\d)inches\\b/gi, "$1 in").replace(/(\\d)inch\\b/gi, "$1 in").replace(/(\\d)pcs\\b/gi, "$1 pieces").replace(/\\s{2,}/g, " ");
+    const after = before.trim().replace(/(\d)inches\b/gi, "$1 in").replace(/(\d)inch\b/gi, "$1 in").replace(/(\d)pcs\b/gi, "$1 pieces").replace(/\s{2,}/g, " ");
     if (before !== after) changes.push({from:before,to:after,reason:"Formatting only; original option remains available"});
   }
   return changes;
@@ -40,7 +40,6 @@ export default async function CleanerPage({ searchParams }) {
   const params = await searchParams;
   const filter = ["all","options","images","labels"].includes(params?.filter) ? params.filter : "all";
   let products = [];
-  let proposals = [];
   let proposalsNote = "";
   let error = "";
   try {
@@ -74,9 +73,9 @@ export default async function CleanerPage({ searchParams }) {
       <nav aria-label="Filter product issues" style={{display:"flex",flexWrap:"wrap",gap:12,margin:"20px 0"}}>{[["all","All flagged"],["options","Option problems"],["images","Image problems"],["labels","Safe label suggestions"]].map(([value,label])=><a key={value} href={"/cleaner?filter="+value} aria-current={filter===value?"page":undefined} style={{padding:"8px 12px",border:"1px solid #bbb",borderRadius:8,fontWeight:filter===value?700:400}}>{label}</a>)}</nav>
       {visible.length === 0 ? <p>No products match this filter.</p> : visible.map(p => <section key={p.id} style={{border:"1px solid #ddd",borderRadius:12,padding:16,margin:"14px 0"}}>
         <h2 style={{fontSize:18,margin:"0 0 8px"}}><a href={"/products/"+encodeURIComponent(p.slug)}>{p.title}</a></h2>
-        <p style={{fontSize:13}}>Supplier ID: {p.source_product_id || "Not available"} {/^\\d{12,18}$/.test(String(p.source_product_id||"")) ? <a href={"https://www.aliexpress.com/item/"+p.source_product_id+".html"} target="_blank" rel="noopener noreferrer" style={{marginLeft:12}}>Check original supplier options ↗</a> : null}</p>
+        <p style={{fontSize:13}}>Supplier ID: {p.source_product_id || "Not available"} {/^\d{12,18}$/.test(String(p.source_product_id||"")) ? <a href={"https://www.aliexpress.com/item/"+p.source_product_id+".html"} target="_blank" rel="noopener noreferrer" style={{marginLeft:12}}>Check original supplier options ↗</a> : null}</p>
         <ul>{p.issues.map((issue,i)=><li key={i}>{issue}</li>)}</ul>
-        {safeSuggestions(p).length > 0 ? <details><summary>Automatic safe formatting suggestions ({safeSuggestions(p).length})</summary><ul>{safeSuggestions(p).map((change,i)=><li key={i}>{change.from} → {change.to}</li>)}</ul></details> : null}
+        {safeSuggestions(p).length > 0 ? <details><summary>Review proposed option-name changes ({safeSuggestions(p).length})</summary><table style={{width:"100%",textAlign:"left",borderCollapse:"collapse"}}><thead><tr><th>Current option</th><th>Proposed label</th></tr></thead><tbody>{safeSuggestions(p).map((change,i)=><tr key={i}><td style={{padding:8,borderBottom:"1px solid #ddd"}}>{change.from}</td><td style={{padding:8,borderBottom:"1px solid #ddd"}}>{change.to}</td></tr>)}</tbody></table><p>Preview only. Option images, counts, supplier names, prices, and product links are unchanged.</p></details> : null}
       </section>)}
     </>}
   </main>;
