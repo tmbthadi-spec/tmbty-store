@@ -24,6 +24,18 @@ function inspect(product) {
   return [...new Set(issues)];
 }
 
+
+// Conservative automatic suggestions only: do not guess missing supplier choices.
+function safeSuggestions(product) {
+  const changes = [];
+  for (const v of Array.isArray(product.variants) ? product.variants : []) {
+    const before = String(v?.name || "");
+    const after = before.trim().replace(/(\\d)inches\\b/gi, "$1 in").replace(/(\\d)inch\\b/gi, "$1 in").replace(/(\\d)pcs\\b/gi, "$1 pieces").replace(/\\s{2,}/g, " ");
+    if (before !== after) changes.push({from:before,to:after,reason:"Formatting only; original option remains available"});
+  }
+  return changes;
+}
+
 export default async function CleanerPage() {
   let products = [];
   let error = "";
@@ -34,7 +46,8 @@ export default async function CleanerPage() {
     products = await response.json();
   } catch (e) { error = e.message; }
   const flagged = products.map(p => ({ ...p, issues: inspect(p) })).filter(p => p.issues.length);
-  const report = flagged.map(p => ({ product_id:p.id, title:p.title, product_url:"/products/"+p.slug, supplier_id:p.source_product_id, issues:p.issues, original_variants:p.variants }));
+  const report = flagged.map(p => ({ product_id:p.id, title:p.title, product_url:"/products/"+p.slug, supplier_id:p.source_product_id, issues:p.issues, original_variants:p.variants, safe_formatting_suggestions:safeSuggestions(p) }));
+  const suggestionCount = report.reduce((n,p)=>n+p.safe_formatting_suggestions.length,0);
   const reportUrl = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify({generated_at:new Date().toISOString(),total_products:products.length,flagged_products:report.length,products:report},null,2));
   const missingOptions = flagged.filter(p => p.issues.some(i => i.includes("saved option"))).length;
   const imageIssues = flagged.filter(p => p.issues.some(i => i.toLowerCase().includes("image") || i.toLowerCase().includes("photo"))).length;
@@ -44,12 +57,14 @@ export default async function CleanerPage() {
     <p>Read-only checks. This page never deletes options, photos, products, or changes prices. Supplier verification is required before repairing missing options.</p>
     {error ? <p role="alert">{error}</p> : <>
       <p><strong>{products.length}</strong> published products checked · <strong>{flagged.length}</strong> need review</p>
+      <p><strong>{suggestionCount}</strong> safe option-label formatting suggestions generated automatically. They are included in the audit download for review; no supplier choices are removed.</p>
       <p><a href={reportUrl} download="miga-mart-product-audit.json" style={{display:"inline-block",padding:"10px 16px",border:"1px solid currentColor",borderRadius:8}}>Download full audit and original saved options</a></p>
       <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>{[["Missing or single options",missingOptions],["Image issues",imageIssues],["Suspicious options",suspiciousOptions]].map(([label,count])=><div key={label} style={{border:"1px solid #ddd",borderRadius:10,padding:16,minWidth:180}}><strong style={{fontSize:28}}>{count}</strong><div>{label}</div></div>)}</div>
       {flagged.length === 0 ? <p>No issues detected by these basic checks.</p> : flagged.map(p => <section key={p.id} style={{border:"1px solid #ddd",borderRadius:12,padding:16,margin:"14px 0"}}>
         <h2 style={{fontSize:18,margin:"0 0 8px"}}><a href={"/products/"+encodeURIComponent(p.slug)}>{p.title}</a></h2>
         <p style={{fontSize:13}}>Supplier ID: {p.source_product_id || "Not available"} {/^\\d{12,18}$/.test(String(p.source_product_id||"")) ? <a href={"https://www.aliexpress.com/item/"+p.source_product_id+".html"} target="_blank" rel="noopener noreferrer" style={{marginLeft:12}}>Check original supplier options ↗</a> : null}</p>
         <ul>{p.issues.map((issue,i)=><li key={i}>{issue}</li>)}</ul>
+        {safeSuggestions(p).length > 0 ? <details><summary>Automatic safe formatting suggestions ({safeSuggestions(p).length})</summary><ul>{safeSuggestions(p).map((change,i)=><li key={i}>{change.from} → {change.to}</li>)}</ul></details> : null}
       </section>)}
     </>}
   </main>;
