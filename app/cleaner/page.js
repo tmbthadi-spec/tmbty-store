@@ -33,11 +33,15 @@ export default async function CleanerPage() {
     products = await response.json();
   } catch (e) { error = e.message; }
   const flagged = products.map(p => ({ ...p, issues: inspect(p) })).filter(p => p.issues.length);
+  const missingOptions = flagged.filter(p => p.issues.some(i => i.includes("saved option"))).length;
+  const imageIssues = flagged.filter(p => p.issues.some(i => i.toLowerCase().includes("image") || i.toLowerCase().includes("photo"))).length;
+  const suspiciousOptions = flagged.filter(p => p.issues.some(i => /junk|duplicate|repeated capacity|blank option/i.test(i))).length;
   return <main style={{maxWidth:1050,margin:"40px auto",padding:"0 20px"}}>
     <h1>Product Cleaner — Safety Audit</h1>
     <p>Read-only checks. This page never deletes options, photos, products, or changes prices. Supplier verification is required before repairing missing options.</p>
     {error ? <p role="alert">{error}</p> : <>
       <p><strong>{products.length}</strong> published products checked · <strong>{flagged.length}</strong> need review</p>
+      <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>{[["Missing or single options",missingOptions],["Image issues",imageIssues],["Suspicious options",suspiciousOptions]].map(([label,count])=><div key={label} style={{border:"1px solid #ddd",borderRadius:10,padding:16,minWidth:180}}><strong style={{fontSize:28}}>{count}</strong><div>{label}</div></div>)}</div>
       {flagged.length === 0 ? <p>No issues detected by these basic checks.</p> : flagged.map(p => <section key={p.id} style={{border:"1px solid #ddd",borderRadius:12,padding:16,margin:"14px 0"}}>
         <h2 style={{fontSize:18,margin:"0 0 8px"}}><a href={"/products/"+encodeURIComponent(p.slug)}>{p.title}</a></h2>
         <p style={{fontSize:13}}>Supplier ID: {p.source_product_id || "Not available"}</p>
