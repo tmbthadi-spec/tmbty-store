@@ -28,7 +28,7 @@ export async function generateMetadata({ params }) {
     alternates: { canonical: `/products/${p.slug}` },
     openGraph: {
       type:"website",
-      siteName:"TMBTY",
+      siteName:"Miga Mart",
       title:p.title,
       description:pinterestDescription || metaDescription,
       url:`/products/${p.slug}`,
@@ -74,7 +74,7 @@ export default async function ProductPage({ params }) {
       "@type":"Offer",
       priceCurrency:"USD",
       price:Number(p.retail_price||0).toFixed(2),
-      url:`https://tmbty.com/products/${p.slug}`,
+      url:`https://migamart.com/products/${p.slug}`,
       availability:"https://schema.org/InStock"
     },
     ...(averageRating ? {
