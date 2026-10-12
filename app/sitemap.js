@@ -1,43 +1,43 @@
 import { getPublishedProducts } from "../lib/supabase";
 
-const CATEGORIES = {
-  "Tea & Coffee": ["Tea Set","Coffee Set","Cup & Saucer","Mug","Teapot"],
-  "Dinnerware": ["Dinnerware Set","Plate","Bowl","Serving Set"],
-  "Kitchen Storage": ["Canister Set","Storage Jar","Organizer"],
-  "Kitchenware": ["Serving Tray","Cake Stand","Kitchen Accessory"],
-  "Home Decor": ["Table Decor","Decorative Accent"]
-};
+const BASE = "https://migamart.com";
+
+export const dynamic = "force-dynamic";
 
 export default async function sitemap() {
   const products = await getPublishedProducts();
-  const base = "https://tmbty.com";
-  const now = new Date();
+  const categories = new Map();
+  for (const product of products) {
+    if (!product.category) continue;
+    if (!categories.has(product.category)) categories.set(product.category, new Set());
+    if (product.subcategory) categories.get(product.category).add(product.subcategory);
+  }
 
-  const fixed = [
-    { url: base, lastModified: now, changeFrequency: "daily", priority: 1 },
-    ...Object.entries(CATEGORIES).flatMap(([category, subcategories]) => [
-      {
-        url: `${base}/category/${encodeURIComponent(category)}`,
-        lastModified: now,
-        changeFrequency: "daily",
-        priority: 0.9
-      },
-      ...subcategories.map(subcategory => ({
-        url: `${base}/category/${encodeURIComponent(category)}/${encodeURIComponent(subcategory)}`,
-        lastModified: now,
+  const pages = [{ url: BASE, changeFrequency: "daily", priority: 1 }];
+  for (const [category, subcategories] of categories) {
+    pages.push({
+      url: `${BASE}/category/${encodeURIComponent(category)}`,
+      changeFrequency: "weekly",
+      priority: 0.8
+    });
+    for (const subcategory of subcategories) {
+      pages.push({
+        url: `${BASE}/category/${encodeURIComponent(category)}/${encodeURIComponent(subcategory)}`,
         changeFrequency: "weekly",
-        priority: 0.8
-      }))
-    ])
-  ];
-
-  return [
-    ...fixed,
-    ...products.map(p => ({
-      url: `${base}/products/${p.slug}`,
-      lastModified: new Date(p.updated_at || p.created_at || Date.now()),
+        priority: 0.7
+      });
+    }
+  }
+  for (const product of products) {
+    if (!product.slug) continue;
+    const timestamp = product.updated_at || product.created_at;
+    const modified = timestamp ? new Date(timestamp) : null;
+    pages.push({
+      url: `${BASE}/products/${encodeURIComponent(product.slug)}`,
+      ...(modified && !Number.isNaN(modified.getTime()) ? { lastModified: modified } : {}),
       changeFrequency: "weekly",
       priority: 0.7
-    }))
-  ];
+    });
+  }
+  return pages;
 }
