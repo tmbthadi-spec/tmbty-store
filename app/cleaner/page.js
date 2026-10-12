@@ -36,7 +36,9 @@ function safeSuggestions(product) {
   return changes;
 }
 
-export default async function CleanerPage() {
+export default async function CleanerPage({ searchParams }) {
+  const params = await searchParams;
+  const filter = ["all","options","images","labels"].includes(params?.filter) ? params.filter : "all";
   let products = [];
   let error = "";
   try {
@@ -48,6 +50,7 @@ export default async function CleanerPage() {
   const flagged = products.map(p => ({ ...p, issues: inspect(p) })).filter(p => p.issues.length);
   const report = flagged.map(p => ({ product_id:p.id, title:p.title, product_url:"/products/"+p.slug, supplier_id:p.source_product_id, issues:p.issues, original_variants:p.variants, safe_formatting_suggestions:safeSuggestions(p) }));
   const suggestionCount = report.reduce((n,p)=>n+p.safe_formatting_suggestions.length,0);
+  const visible = flagged.filter(p => filter === "all" || (filter === "options" && p.issues.some(i => /saved option|junk|duplicate|ambiguous option|repeated capacity|blank option/i.test(i))) || (filter === "images" && p.issues.some(i => /image|photo/i.test(i))) || (filter === "labels" && safeSuggestions(p).length > 0));
   const reportUrl = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify({generated_at:new Date().toISOString(),total_products:products.length,flagged_products:report.length,products:report},null,2));
   const missingOptions = flagged.filter(p => p.issues.some(i => i.includes("saved option"))).length;
   const imageIssues = flagged.filter(p => p.issues.some(i => i.toLowerCase().includes("image") || i.toLowerCase().includes("photo"))).length;
@@ -60,7 +63,8 @@ export default async function CleanerPage() {
       <p><strong>{suggestionCount}</strong> safe option-label formatting suggestions generated automatically. They are included in the audit download for review; no supplier choices are removed.</p>
       <p><a href={reportUrl} download="miga-mart-product-audit.json" style={{display:"inline-block",padding:"10px 16px",border:"1px solid currentColor",borderRadius:8}}>Download full audit and original saved options</a></p>
       <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>{[["Missing or single options",missingOptions],["Image issues",imageIssues],["Suspicious options",suspiciousOptions]].map(([label,count])=><div key={label} style={{border:"1px solid #ddd",borderRadius:10,padding:16,minWidth:180}}><strong style={{fontSize:28}}>{count}</strong><div>{label}</div></div>)}</div>
-      {flagged.length === 0 ? <p>No issues detected by these basic checks.</p> : flagged.map(p => <section key={p.id} style={{border:"1px solid #ddd",borderRadius:12,padding:16,margin:"14px 0"}}>
+      <nav aria-label="Filter product issues" style={{display:"flex",flexWrap:"wrap",gap:12,margin:"20px 0"}}>{[["all","All flagged"],["options","Option problems"],["images","Image problems"],["labels","Safe label suggestions"]].map(([value,label])=><a key={value} href={"/cleaner?filter="+value} aria-current={filter===value?"page":undefined} style={{padding:"8px 12px",border:"1px solid #bbb",borderRadius:8,fontWeight:filter===value?700:400}}>{label}</a>)}</nav>
+      {visible.length === 0 ? <p>No products match this filter.</p> : visible.map(p => <section key={p.id} style={{border:"1px solid #ddd",borderRadius:12,padding:16,margin:"14px 0"}}>
         <h2 style={{fontSize:18,margin:"0 0 8px"}}><a href={"/products/"+encodeURIComponent(p.slug)}>{p.title}</a></h2>
         <p style={{fontSize:13}}>Supplier ID: {p.source_product_id || "Not available"} {/^\\d{12,18}$/.test(String(p.source_product_id||"")) ? <a href={"https://www.aliexpress.com/item/"+p.source_product_id+".html"} target="_blank" rel="noopener noreferrer" style={{marginLeft:12}}>Check original supplier options ↗</a> : null}</p>
         <ul>{p.issues.map((issue,i)=><li key={i}>{issue}</li>)}</ul>
