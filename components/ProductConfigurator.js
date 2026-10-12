@@ -211,7 +211,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
         <RatingStars reviews={product.reviews||[]} rating={product.rating} />
         <div className="fashionPrice">${Number(product.retail_price||0).toFixed(2)}</div>
 
-        {optionGroups.map(group=><section className="fashionOptions" key={group.name}>
+        {optionGroups.filter(group=>group.options.length>1).map(group=><section className="fashionOptions" key={group.name}>
           <div className="fashionOptionHeading">
             <strong>{group.name}</strong>
             <span>{selectedOptions[group.name]?.name || "Select an option"}</span>
