@@ -40,12 +40,16 @@ export default async function CleanerPage({ searchParams }) {
   const params = await searchParams;
   const filter = ["all","options","images","labels"].includes(params?.filter) ? params.filter : "all";
   let products = [];
+  let proposals = [];
+  let proposalsNote = "";
   let error = "";
   try {
     const url = SUPABASE_URL + "/rest/v1/tmbty_products?select=id,slug,title,status,images,variants,source_product_id&status=eq.published&order=created_at.desc&limit=500";
     const response = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY }, cache: "no-store" });
     if (!response.ok) throw new Error("Unable to read product catalog");
     products = await response.json();
+    // Proposal records are intentionally not public. Do not use an admin key in this page.
+    proposalsNote = "Approval queue is protected in the database. A signed-in administrator interface is required to view or approve saved proposals.";
   } catch (e) { error = e.message; }
   const flagged = products.map(p => ({ ...p, issues: inspect(p) })).filter(p => p.issues.length);
   const report = flagged.map(p => ({ product_id:p.id, title:p.title, product_url:"/products/"+p.slug, supplier_id:p.source_product_id, issues:p.issues, original_variants:p.variants, safe_formatting_suggestions:safeSuggestions(p) }));
@@ -60,6 +64,7 @@ export default async function CleanerPage({ searchParams }) {
   return <main style={{maxWidth:1050,margin:"40px auto",padding:"0 20px"}}>
     <h1>Product Cleaner — Safety Audit</h1>
     <p style={{padding:12,border:"1px solid #ccc",borderRadius:8}}><strong>Protected workflow:</strong> A catalog snapshot is stored separately in the database. Proposed corrections remain review-only. No automatic writes to product records are enabled.</p>
+    <section style={{padding:16,border:"1px solid #ddd",borderRadius:12,marginBottom:20}}><h2 style={{fontSize:20}}>Saved correction approval queue</h2><p>{proposalsNote || "The protected approval queue is not available on this public page."}</p><p>Review and export suggestions below. Approval and application require administrator authentication; this public page cannot change store data.</p></section>
     <p>Read-only checks. This page never deletes options, photos, products, or changes prices. Supplier verification is required before repairing missing options.</p>
     {error ? <p role="alert">{error}</p> : <>
       <p><strong>{products.length}</strong> published products checked · <strong>{flagged.length}</strong> need review</p>
