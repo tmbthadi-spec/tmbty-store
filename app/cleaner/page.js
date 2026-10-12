@@ -59,6 +59,7 @@ export default async function CleanerPage({ searchParams }) {
   const suspiciousOptions = flagged.filter(p => p.issues.some(i => /junk|duplicate|repeated capacity|blank option|ambiguous option/i.test(i))).length;
   return <main style={{maxWidth:1050,margin:"40px auto",padding:"0 20px"}}>
     <h1>Product Cleaner — Safety Audit</h1>
+    <p style={{padding:12,border:"1px solid #ccc",borderRadius:8}}><strong>Protected workflow:</strong> A catalog snapshot is stored separately in the database. Proposed corrections remain review-only. No automatic writes to product records are enabled.</p>
     <p>Read-only checks. This page never deletes options, photos, products, or changes prices. Supplier verification is required before repairing missing options.</p>
     {error ? <p role="alert">{error}</p> : <>
       <p><strong>{products.length}</strong> published products checked · <strong>{flagged.length}</strong> need review</p>
