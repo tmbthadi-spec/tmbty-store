@@ -5,14 +5,14 @@ import CartDrawer from "../components/CartDrawer";
 import CheckoutReturn from "../components/CheckoutReturn";
 
 export const metadata = {
-  metadataBase: new URL("https://tmbty.com"),
-  title: { default: "TMBTY — Elegant Kitchen & Dining Finds", template: "%s | TMBTY" },
-  description: "Shop elegant and affordable kitchen, dining, tea, coffee, tableware, storage and home décor finds at TMBTY.",
+  metadataBase: new URL("https://migamart.com"),
+  title: { default: "Miga Mart — Luxury Gold & Elegant Dining", template: "%s | Miga Mart" },
+  description: "Shop luxury gold-tone coffee and tea sets, elegant serving trays, tableware and refined home décor at Miga Mart.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    siteName: "TMBTY",
-    title: "TMBTY — Elegant Kitchen & Dining Finds",
+    siteName: "Miga Mart",
+    title: "Miga Mart — Elegant Kitchen & Dining Finds",
     description: "Curated tea sets, coffee sets, dinnerware, kitchen storage, kitchenware and home décor."
   }
 };
@@ -20,7 +20,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return <html lang="en"><body><CartProvider>
     <header><div className="wrap top">
-      <a className="brand" href="/">TMBTY</a>
+      <a className="brand" href="/">Miga Mart</a>
       <nav className="nav">
         <div className="navGroup"><a href="/category/Tea%20%26%20Coffee">Tea & Coffee</a><div className="navDropdown">
           <a href="/category/Tea%20%26%20Coffee/Tea%20Set">Tea Sets</a>
@@ -55,6 +55,6 @@ export default function RootLayout({ children }) {
     <CheckoutReturn />
     {children}
     <CartDrawer />
-    <footer><div className="wrap">© TMBTY. Elegant kitchen & dining finds.</div></footer>
+    <footer><div className="wrap">© Miga Mart. Elegant kitchen & dining finds.</div></footer>
   </CartProvider></body></html>
 }
