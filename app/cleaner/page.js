@@ -8,6 +8,8 @@ function inspect(product) {
   const variants = Array.isArray(product.variants) ? product.variants : [];
   const images = Array.isArray(product.images) ? product.images : [];
   if (!images[0]) issues.push("Missing main product photo");
+  if (images.length > 1 && new Set(images.map(i => typeof i === "string" ? i.trim() : JSON.stringify(i))).size < images.length) issues.push("Duplicate saved product photos — review before removing");
+  if (!product.source_product_id || !/^\\d{12,18}$/.test(String(product.source_product_id))) issues.push("Supplier product ID missing or invalid — cannot verify options");
   if (!variants.length) issues.push("No saved options — verify whether supplier has choices");
   if (variants.length === 1) issues.push("Only one saved option — verify supplier choices");
   const seen = new Set();
@@ -21,7 +23,10 @@ function inspect(product) {
     seen.add(name.toLowerCase());
     if (!v?.image && variants.length > 1) issues.push("Option needs image verification: " + name);
   }
-  if (/^(mug|coffee set|plate|fruit mug)$/i.test(String(product.title || "").trim())) issues.push("Generic product title");
+  const title = String(product.title || "").trim();
+  if (/^(mug|coffee set|plate|fruit mug)$/i.test(title)) issues.push("Generic product title");
+  if (/^(?:fruit|gold|luxury|elegant|modern|decorative|beautiful|home|kitchen|dining|accent|accessory|set|and|&|\\s|-)+$/i.test(title) || /\\b(?:kitchen accessory|home accessory|dining accessory|home item|household item)\\b/i.test(title)) issues.push("Vague product title — verify actual product type against supplier");
+  if (title.length > 110) issues.push("Overlong product title — review for supplier noise");
   return [...new Set(issues)];
 }
 
@@ -54,7 +59,7 @@ export default async function CleanerPage({ searchParams }) {
   const flagged = products.map(p => ({ ...p, issues: inspect(p) })).filter(p => p.issues.length);
   const report = flagged.map(p => ({ product_id:p.id, title:p.title, product_url:"/products/"+p.slug, supplier_id:p.source_product_id, issues:p.issues, original_variants:p.variants, safe_formatting_suggestions:safeSuggestions(p) }));
   const suggestionCount = report.reduce((n,p)=>n+p.safe_formatting_suggestions.length,0);
-  const reviewPriority = p => p.issues.some(i => /Missing main product photo|No saved options|Possible imported junk|Duplicate option/i.test(i)) ? "High" : p.issues.some(i => /Only one saved option|Ambiguous option|Generic product title/i.test(i)) ? "Medium" : "Low";
+  const reviewPriority = p => p.issues.some(i => /Missing main product photo|No saved options|Possible imported junk|Duplicate option|Supplier product ID missing/i.test(i)) ? "High" : p.issues.some(i => /Only one saved option|Ambiguous option|Generic product title|Vague product title|Overlong product title|Duplicate saved product photos/i.test(i)) ? "Medium" : "Low";
   const priorityCounts = {High:0,Medium:0,Low:0};
   flagged.forEach(p => { priorityCounts[reviewPriority(p)]++; });
   const visible = flagged.filter(p => filter === "all" || (filter === "options" && p.issues.some(i => /saved option|junk|duplicate|ambiguous option|repeated capacity|blank option/i.test(i))) || (filter === "images" && p.issues.some(i => /image|photo/i.test(i))) || (filter === "labels" && safeSuggestions(p).length > 0));
