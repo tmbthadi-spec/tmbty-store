@@ -29,3 +29,15 @@ export async function POST(request) {
   if (!result.ok) return Response.json({error:"Database rejected correction",detail:body.slice(0,500)}, {status:409});
   return Response.json({ok:true, action, proposalId});
 }
+
+export async function GET(request) {
+  if (!authorized(request)) return Response.json({error:"Unauthorized"}, {status:401});
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceKey) return Response.json({error:"Server database credential not configured"}, {status:503});
+  const result = await fetch("https://dchbrrnywealudwripwq.supabase.co/rest/v1/miga_cleaner_proposals?select=id,product_id,status,original_variants,proposed_variants,created_at&order=created_at.desc&limit=100", {
+    headers:{"apikey":serviceKey,"Authorization":"Bearer "+serviceKey},cache:"no-store"
+  });
+  if (!result.ok) return Response.json({error:"Unable to load saved proposals"}, {status:502});
+  const proposals = await result.json();
+  return Response.json({proposals}, {headers:{"Cache-Control":"no-store"}});
+}
