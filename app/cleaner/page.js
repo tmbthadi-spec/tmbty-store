@@ -44,7 +44,7 @@ function safeSuggestions(product) {
 
 export default async function CleanerPage({ searchParams }) {
   const params = await searchParams;
-  const filter = ["all","options","images","labels"].includes(params?.filter) ? params.filter : "all";
+  const filter = ["all","options","images","labels","titles"].includes(params?.filter) ? params.filter : "all";
   let products = [];
   let proposalsNote = "";
   let error = "";
@@ -62,13 +62,14 @@ export default async function CleanerPage({ searchParams }) {
   const reviewPriority = p => p.issues.some(i => /Missing main product photo|No saved options|Possible imported junk|Duplicate option|Supplier product ID missing/i.test(i)) ? "High" : p.issues.some(i => /Only one saved option|Ambiguous option|Generic product title|Vague product title|Overlong product title|Duplicate saved product photos/i.test(i)) ? "Medium" : "Low";
   const priorityCounts = {High:0,Medium:0,Low:0};
   flagged.forEach(p => { priorityCounts[reviewPriority(p)]++; });
-  const visible = flagged.filter(p => filter === "all" || (filter === "options" && p.issues.some(i => /saved option|junk|duplicate|ambiguous option|repeated capacity|blank option/i.test(i))) || (filter === "images" && p.issues.some(i => /image|photo/i.test(i))) || (filter === "labels" && safeSuggestions(p).length > 0));
+  const visible = flagged.filter(p => filter === "all" || (filter === "options" && p.issues.some(i => /saved option|junk|duplicate|ambiguous option|repeated capacity|blank option/i.test(i))) || (filter === "images" && p.issues.some(i => /image|photo/i.test(i))) || (filter === "labels" && safeSuggestions(p).length > 0) || (filter === "titles" && p.issues.some(i => /product title/i.test(i))));
   const reportUrl = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify({generated_at:new Date().toISOString(),total_products:products.length,flagged_products:report.length,products:report},null,2));
   const corrections = report.flatMap(p => p.safe_formatting_suggestions.map(change => ({product_id:p.product_id,supplier_id:p.supplier_id,original_name:change.from,suggested_name:change.to,reason:change.reason,approved:false})));
   const correctionsUrl = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify({mode:"REVIEW_ONLY",note:"These are proposals only. No changes have been applied.",corrections},null,2));
   const reviewable = report.filter(p => p.safe_formatting_suggestions.length).map(p => ({product_id:p.product_id,title:p.title,changes:p.safe_formatting_suggestions}));
   const missingOptions = flagged.filter(p => p.issues.some(i => i.includes("saved option"))).length;
   const imageIssues = flagged.filter(p => p.issues.some(i => i.toLowerCase().includes("image") || i.toLowerCase().includes("photo"))).length;
+  const titleIssues = flagged.filter(p => p.issues.some(i => /product title/i.test(i))).length;
   const suspiciousOptions = flagged.filter(p => p.issues.some(i => /junk|duplicate|repeated capacity|blank option|ambiguous option/i.test(i))).length;
   return <main style={{maxWidth:1050,margin:"40px auto",padding:"0 20px"}}>
     <h1>Product Cleaner — Safety Audit</h1>
@@ -82,8 +83,8 @@ export default async function CleanerPage({ searchParams }) {
       <p style={{display:"flex",gap:12,flexWrap:"wrap"}}><a href={reportUrl} download="miga-mart-product-audit.json" style={{display:"inline-block",padding:"10px 16px",border:"1px solid currentColor",borderRadius:8}}>Download full audit and original saved options</a><a href={correctionsUrl} download="miga-mart-proposed-corrections.json" style={{display:"inline-block",padding:"10px 16px",border:"1px solid currentColor",borderRadius:8}}>Download proposed corrections for review</a></p>
       <CleanerReview proposals={reviewable} />
       <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:18}}>{Object.entries(priorityCounts).map(([level,count])=><div key={level} style={{padding:12,border:"1px solid #ddd",borderRadius:10}}><strong>{count}</strong> {level} priority products</div>)}</div>
-      <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>{[["Missing or single options",missingOptions],["Image issues",imageIssues],["Suspicious options",suspiciousOptions]].map(([label,count])=><div key={label} style={{border:"1px solid #ddd",borderRadius:10,padding:16,minWidth:180}}><strong style={{fontSize:28}}>{count}</strong><div>{label}</div></div>)}</div>
-      <nav aria-label="Filter product issues" style={{display:"flex",flexWrap:"wrap",gap:12,margin:"20px 0"}}>{[["all","All flagged"],["options","Option problems"],["images","Image problems"],["labels","Safe label suggestions"]].map(([value,label])=><a key={value} href={"/cleaner?filter="+value} aria-current={filter===value?"page":undefined} style={{padding:"8px 12px",border:"1px solid #bbb",borderRadius:8,fontWeight:filter===value?700:400}}>{label}</a>)}</nav>
+      <div style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>{[["Missing or single options",missingOptions],["Image issues",imageIssues],["Suspicious options",suspiciousOptions],["Title review",titleIssues]].map(([label,count])=><div key={label} style={{border:"1px solid #ddd",borderRadius:10,padding:16,minWidth:180}}><strong style={{fontSize:28}}>{count}</strong><div>{label}</div></div>)}</div>
+      <nav aria-label="Filter product issues" style={{display:"flex",flexWrap:"wrap",gap:12,margin:"20px 0"}}>{[["all","All flagged"],["options","Option problems"],["images","Image problems"],["labels","Safe label suggestions"],["titles","Title review"]].map(([value,label])=><a key={value} href={"/cleaner?filter="+value} aria-current={filter===value?"page":undefined} style={{padding:"8px 12px",border:"1px solid #bbb",borderRadius:8,fontWeight:filter===value?700:400}}>{label}</a>)}</nav>
       {visible.length === 0 ? <p>No products match this filter.</p> : visible.map(p => <section key={p.id} style={{border:"1px solid #ddd",borderRadius:12,padding:16,margin:"14px 0"}}>
         <p style={{fontSize:12,fontWeight:700,marginBottom:6}}>Review priority: {reviewPriority(p)}</p>
         <h2 style={{fontSize:18,margin:"0 0 8px"}}><a href={"/products/"+encodeURIComponent(p.slug)}>{p.title}</a></h2>
