@@ -65,6 +65,7 @@ export default async function CleanerPage({ searchParams }) {
   const suspiciousOptions = flagged.filter(p => p.issues.some(i => /junk|duplicate|repeated capacity|blank option|ambiguous option/i.test(i))).length;
   return <main style={{maxWidth:1050,margin:"40px auto",padding:"0 20px"}}>
     <h1>Product Cleaner — Safety Audit</h1>
+    <p><a href="/api/cleaner-status" target="_blank" rel="noopener noreferrer">Check secure cleaner setup status ↗</a></p>
     <p style={{padding:12,border:"1px solid #ccc",borderRadius:8}}><strong>Protected workflow:</strong> A catalog snapshot is stored separately in the database. Proposed corrections remain review-only. No automatic writes to product records are enabled.</p>
     <section style={{padding:16,border:"1px solid #ddd",borderRadius:12,marginBottom:20}}><h2 style={{fontSize:20}}>Saved correction approval queue</h2><p>{proposalsNote || "The protected approval queue is not available on this public page."}</p><p>Review and export suggestions below. Approval and application require administrator authentication; this public page cannot change store data.</p></section>
     <p>Read-only checks. This page never deletes options, photos, products, or changes prices. Supplier verification is required before repairing missing options.</p>
