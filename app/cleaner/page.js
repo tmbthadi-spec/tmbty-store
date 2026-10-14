@@ -49,7 +49,7 @@ export default async function CleanerPage({ searchParams }) {
   let proposalsNote = "";
   let error = "";
   try {
-    const url = SUPABASE_URL + "/rest/v1/tmbty_products?select=id,slug,title,status,images,variants,source_product_id&status=eq.published&order=created_at.desc&limit=500";
+    const url = SUPABASE_URL + "/rest/v1/tmbty_products?select=id,slug,title,status,images,variants,source_product_id,supplier_url,source&status=eq.published&order=created_at.desc&limit=500";
     const response = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY }, cache: "no-store" });
     if (!response.ok) throw new Error("Unable to read product catalog");
     products = await response.json();
