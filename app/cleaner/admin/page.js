@@ -6,6 +6,7 @@ export default function CleanerAdminPage() {
   const [proposalId,setProposalId] = useState("");
   const [busy,setBusy] = useState(false);
   const [proposals,setProposals] = useState([]);
+  const [evidence,setEvidence] = useState([]);
   const [result,setResult] = useState("");
   async function loadProposals() {
     setBusy(true);setResult("");
@@ -16,6 +17,16 @@ export default function CleanerAdminPage() {
       setProposals(data.proposals || []);
       setResult((data.proposals || []).length + " saved proposals loaded.");
     } catch {setResult("Unable to load proposals.");} finally {setBusy(false);}
+  }
+  async function loadEvidence() {
+    setBusy(true);setResult("");
+    try {
+      const response = await fetch("/api/cleaner-supplier-evidence",{headers:{"x-miga-admin-secret":secret},cache:"no-store"});
+      const data = await response.json();
+      if (!response.ok) {setResult(data.error || "Could not load supplier evidence");return;}
+      setEvidence(data.evidence || []);
+      setResult((data.evidence || []).length + " supplier evidence records loaded.");
+    } catch {setResult("Unable to load supplier evidence.");} finally {setBusy(false);}
   }
   async function run(action) {
     const id = Number(proposalId);
@@ -41,12 +52,14 @@ export default function CleanerAdminPage() {
     <form onSubmit={e=>e.preventDefault()} style={{display:"grid",gap:14}}>
       <label>Administrator secret (not saved)<input type="password" autoComplete="off" value={secret} onChange={e=>setSecret(e.target.value)} style={{display:"block",width:"100%",padding:10,marginTop:5}} /></label>
       <button type="button" disabled={busy || !secret} onClick={loadProposals}>Load saved correction queue</button>
+      <button type="button" disabled={busy || !secret} onClick={loadEvidence}>Load supplier comparisons</button>
+      {evidence.map(item=><section key={item.product_id} style={{border:"1px solid #ddd",padding:12,borderRadius:8}}><strong>Supplier evidence — {item.supplier_product_id}</strong><p>Original supplier title: {item.supplier_title || "Not available"}</p><p>Observed selected option: {item.observed_option_label || "Not confirmed"}</p><p>Confirmed complete option list: {Array.isArray(item.observed_option_names) && item.observed_option_names.length ? item.observed_option_names.join(", ") : "Not yet verified"}</p><p style={{fontSize:12}}>{item.notes}</p><a href={item.evidence_url} target="_blank" rel="noopener noreferrer">View original supplier listing</a></section>)}
       {proposals.map(p=><div key={p.id} style={{border:"1px solid #ddd",padding:12,borderRadius:8}}><strong>Proposal #{p.id}</strong> — {p.status}<div style={{fontSize:12}}>Product: {p.product_id}</div><div>{(p.original_variants || []).map((v,i)=>{const after=(p.proposed_variants || [])[i];return v.name!==after?.name?<div key={i}>{v.name} → {after?.name}</div>:null;})}</div><button type="button" onClick={()=>setProposalId(String(p.id))}>Select proposal #{p.id}</button></div>)}
       <label>Saved proposal ID<input type="number" min="1" step="1" value={proposalId} onChange={e=>setProposalId(e.target.value)} style={{display:"block",width:"100%",padding:10,marginTop:5}} /></label>
       <div style={{display:"flex",gap:10,flexWrap:"wrap"}}><button type="button" disabled={busy} onClick={()=>run("apply")} style={{padding:"10px 18px"}}>Apply approved correction</button><button type="button" disabled={busy} onClick={()=>run("rollback")} style={{padding:"10px 18px"}}>Roll back correction</button></div>
     </form>
     {result && <p role="status" style={{padding:12,border:"1px solid #ddd",borderRadius:8}}>{result}</p>}
-    <p style={{marginTop:24}}>Database write access must be configured server-side before these controls can work. Never enter your Supabase service-role key here.</p>
+    <p style={{marginTop:24}}>Supplier comparisons are read-only. No supplier option is added or removed automatically. Never enter your Supabase service-role key here.</p>
     <a href="/cleaner">Return to product audit</a>
   </main>;
 }
