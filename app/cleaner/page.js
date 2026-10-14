@@ -49,7 +49,7 @@ export default async function CleanerPage({ searchParams }) {
     if (!response.ok) throw new Error("Unable to read product catalog");
     products = await response.json();
     // Proposal records are intentionally not public. Do not use an admin key in this page.
-    proposalsNote = "Approval queue is protected in the database. A signed-in administrator interface is required to view or approve saved proposals.";
+    proposalsNote = "The approval queue is protected. Open Cleaner Admin to view applied and pending corrections.";
   } catch (e) { error = e.message; }
   const flagged = products.map(p => ({ ...p, issues: inspect(p) })).filter(p => p.issues.length);
   const report = flagged.map(p => ({ product_id:p.id, title:p.title, product_url:"/products/"+p.slug, supplier_id:p.source_product_id, issues:p.issues, original_variants:p.variants, safe_formatting_suggestions:safeSuggestions(p) }));
@@ -68,8 +68,8 @@ export default async function CleanerPage({ searchParams }) {
   return <main style={{maxWidth:1050,margin:"40px auto",padding:"0 20px"}}>
     <h1>Product Cleaner — Safety Audit</h1>
     <p><a href="/api/cleaner-status" target="_blank" rel="noopener noreferrer">Check secure cleaner setup status ↗</a></p>
-    <p style={{padding:12,border:"1px solid #ccc",borderRadius:8}}><strong>Protected workflow:</strong> A catalog snapshot is stored separately in the database. Proposed corrections remain review-only. No automatic writes to product records are enabled.</p>
-    <section style={{padding:16,border:"1px solid #ddd",borderRadius:12,marginBottom:20}}><h2 style={{fontSize:20}}>Saved correction approval queue</h2><p>{proposalsNote || "The protected approval queue is not available on this public page."}</p><p>Review and export suggestions below. Approval and application require administrator authentication; this public page cannot change store data.</p></section>
+    <p style={{padding:12,border:"1px solid #ccc",borderRadius:8}}><strong>Protected workflow:</strong> A catalog snapshot is stored separately in the database. Suggestions on this page are read-only. Approved corrections can be applied separately in Cleaner Admin; no unattended product edits are enabled.</p>
+    <section style={{padding:16,border:"1px solid #ddd",borderRadius:12,marginBottom:20}}><h2 style={{fontSize:20}}>Saved correction approval queue</h2><p><a href="/cleaner/admin" style={{display:"inline-block",padding:"10px 16px",border:"1px solid currentColor",borderRadius:8,fontWeight:700}}>Open Cleaner Admin →</a></p><p>{proposalsNote || "The protected approval queue is not available on this public page."}</p><p>Review and export suggestions below. Approval and application require the administrator secret; this public page cannot change store data.</p></section>
     <p>Read-only checks. This page never deletes options, photos, products, or changes prices. Supplier verification is required before repairing missing options.</p>
     {error ? <p role="alert">{error}</p> : <>
       <p><strong>{products.length}</strong> published products checked · <strong>{flagged.length}</strong> need review</p>
