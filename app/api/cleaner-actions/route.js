@@ -27,7 +27,12 @@ export async function POST(request) {
   });
   const body = await result.text();
   if (!result.ok) return Response.json({error:"Database rejected correction",detail:body.slice(0,500)}, {status:409});
-  return Response.json({ok:true, action, proposalId});
+  let rpcValue;
+  try { rpcValue = JSON.parse(body); } catch { rpcValue = body; }
+  if (rpcValue === false || rpcValue === null || (typeof rpcValue === "object" && rpcValue?.success === false)) {
+    return Response.json({error:"Correction was not confirmed by database"}, {status:409});
+  }
+  return Response.json({ok:true, action, proposalId, databaseResult:rpcValue}, {headers:{"Cache-Control":"no-store"}});
 }
 
 export async function GET(request) {
