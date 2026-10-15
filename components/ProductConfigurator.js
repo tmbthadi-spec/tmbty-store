@@ -54,7 +54,7 @@ function normalizeVariants(variants, selectedColor, fallbackImage){
     const rawName=String(v?.name||v?.label||v?.value||"").trim();
     const image=String(v?.image||v?.image_url||v?.img||"").trim();
     const group=String(v?.group||v?.group_name||v?.groupName||v?.property||v?.property_name||v?.propertyName||v?.option_group||v?.optionGroup||"").trim();
-    return {name:prettifyOptionName(rawName),rawName,image,group,selected:!!v?.selected,key:(group||"option")+"-"+(rawName||"option")+"-"+i};
+    return {name:prettifyOptionName(rawName),rawName,image,group,price:Number(v?.retail_price ?? v?.price ?? 0)>0?Number(v?.retail_price ?? v?.price):null,selected:!!v?.selected,key:(group||"option")+"-"+(rawName||"option")+"-"+i};
   }).filter(v=>v.rawName) : [];
   if(!list.length && selectedColor) return [{name:prettifyOptionName(selectedColor),rawName:selectedColor,image:fallbackImage||"",selected:true,key:"fallback"}];
   return list;
@@ -116,6 +116,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
 
   const [active,setActive] = useState({type:"image",value:images[0] || selectedVariant?.image || ""});
   const displayTitle = optionAwareTitle(product.title, selectedVariant);
+  const selectedPrice = selectedVariant?.price ?? Number(product.retail_price||0);
 
   const selectVariant=(groupName,v)=>{
     setSelectedOptions(prev=>({...prev,[groupName]:v}));
@@ -134,6 +135,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
     add({
       ...product,
       title:displayTitle,
+      retail_price:selectedPrice,
       selectedVariant:optionText ? {name:optionText,image:selectedVariant?.image||""} : null,
       selectedOptions:selectedOptionList.map(x=>({group:x.group,name:x.value.name,rawName:x.value.rawName,image:x.value.image||""})),
       cartImage:selectedVariant?.image || images[0] || ""
@@ -209,7 +211,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
         <div className="fashionCategory">{product.category}{product.subcategory ? ` / ${product.subcategory}` : ""}</div>
         <h1>{displayTitle}</h1>
         <RatingStars reviews={product.reviews||[]} rating={product.rating} />
-        <div className="fashionPrice">${Number(product.retail_price||0).toFixed(2)}</div>
+        <div className="fashionPrice">${selectedPrice.toFixed(2)}</div>
 
         {optionGroups.map(group=><section className="fashionOptions" key={group.name}>
           <div className="fashionOptionHeading">
