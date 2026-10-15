@@ -22,13 +22,7 @@ export default function RootLayout({ children }) {
     <header><div className="wrap top">
       <a className="brand" href="/">Miga Mart</a>
       <nav className="nav">
-        <div className="navGroup"><a href="/category/Tea%20%26%20Coffee">Tea & Coffee</a><div className="navDropdown">
-          <a href="/category/Tea%20%26%20Coffee/Tea%20Set">Tea Sets</a>
-          <a href="/category/Tea%20%26%20Coffee/Coffee%20Set">Coffee Sets</a>
-          <a href="/category/Tea%20%26%20Coffee/Cup%20%26%20Saucer">Cups & Saucers</a>
-          <a href="/category/Tea%20%26%20Coffee/Mug">Mugs</a>
-          <a href="/category/Tea%20%26%20Coffee/Teapot">Teapots</a>
-        </div></div>
+        <a href="/category/Tea%20%26%20Coffee">Coffee &amp; Tea Sets, Mugs, Cups &amp; Teapots</a>
         <div className="navGroup"><a href="/category/Dinnerware">Dinnerware</a><div className="navDropdown">
           <a href="/category/Dinnerware/Dinnerware%20Set">Dinnerware Sets</a>
           <a href="/category/Dinnerware/Plate">Plates</a>
