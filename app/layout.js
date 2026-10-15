@@ -22,26 +22,33 @@ export default function RootLayout({ children }) {
     <header><div className="wrap top">
       <a className="brand" href="/">Miga Mart</a>
       <nav className="nav">
-        <a href="/category/Tea%20%26%20Coffee">Coffee &amp; Tea Sets, Mugs, Cups &amp; Teapots</a>
+        <a href="/">Home</a>
+        <div className="navGroup"><a href="/category/Tea%20%26%20Coffee">Coffee &amp; Tea</a><div className="navDropdown">
+          <a href="/category/Tea%20%26%20Coffee">Shop All Coffee &amp; Tea</a>
+          <a href="/category/Tea%20%26%20Coffee/Coffee%20Set">Coffee Sets</a>
+          <a href="/category/Tea%20%26%20Coffee/Tea%20Set">Tea Sets</a>
+          <a href="/category/Tea%20%26%20Coffee/Cup%20%26%20Saucer">Cups &amp; Saucers</a>
+          <a href="/category/Tea%20%26%20Coffee/Mug">Mugs</a>
+          <a href="/category/Tea%20%26%20Coffee/Teapot">Teapots</a>
+        </div></div>
         <div className="navGroup"><a href="/category/Dinnerware">Dinnerware</a><div className="navDropdown">
+          <a href="/category/Dinnerware">Shop All Dinnerware</a>
           <a href="/category/Dinnerware/Dinnerware%20Set">Dinnerware Sets</a>
           <a href="/category/Dinnerware/Plate">Plates</a>
           <a href="/category/Dinnerware/Bowl">Bowls</a>
           <a href="/category/Dinnerware/Serving%20Set">Serving Sets</a>
         </div></div>
-        <div className="navGroup"><a href="/category/Kitchen%20Storage">Kitchen Storage</a><div className="navDropdown">
-          <a href="/category/Kitchen%20Storage/Canister%20Set">Canister Sets</a>
-          <a href="/category/Kitchen%20Storage/Storage%20Jar">Storage Jars</a>
-          <a href="/category/Kitchen%20Storage/Organizer">Organizers</a>
-        </div></div>
-        <div className="navGroup"><a href="/category/Kitchenware">Kitchenware</a><div className="navDropdown">
+        <div className="navGroup"><a href="/category/Kitchenware">Serving &amp; Kitchenware</a><div className="navDropdown">
+          <a href="/category/Kitchenware">Shop All Kitchenware</a>
           <a href="/category/Kitchenware/Serving%20Tray">Serving Trays</a>
           <a href="/category/Kitchenware/Cake%20Stand">Cake Stands</a>
           <a href="/category/Kitchenware/Kitchen%20Accessory">Kitchen Accessories</a>
         </div></div>
-        <div className="navGroup"><a href="/category/Home%20Decor">Home Décor</a><div className="navDropdown">
-          <a href="/category/Home%20Decor/Table%20Decor">Table Décor</a>
-          <a href="/category/Home%20Decor/Decorative%20Accent">Decorative Accents</a>
+        <div className="navGroup"><a href="/category/Kitchen%20Storage">Kitchen Storage</a><div className="navDropdown">
+          <a href="/category/Kitchen%20Storage">Shop All Storage</a>
+          <a href="/category/Kitchen%20Storage/Canister%20Set">Canister Sets</a>
+          <a href="/category/Kitchen%20Storage/Storage%20Jar">Storage Jars</a>
+          <a href="/category/Kitchen%20Storage/Organizer">Organizers</a>
         </div></div>
       </nav>
       <CartButton />
