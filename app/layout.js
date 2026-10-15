@@ -26,8 +26,7 @@ export default function RootLayout({ children }) {
         <div className="navGroup"><a href="/category/Tea%20%26%20Coffee">Coffee &amp; Tea</a><div className="navDropdown">
           <a href="/category/Tea%20%26%20Coffee">Shop All Coffee &amp; Tea</a>
           <a href="/category/Tea%20%26%20Coffee/Coffee%20%26%20Tea%20Set">Coffee &amp; Tea Sets</a>
-          <a href="/category/Tea%20%26%20Coffee/Cup%20%26%20Saucer">Cups &amp; Saucers</a>
-          <a href="/category/Tea%20%26%20Coffee/Mug">Mugs</a>
+          <a href="/category/Tea%20%26%20Coffee/Cups%20%26%20Mugs">Cups &amp; Mugs</a>
           <a href="/category/Tea%20%26%20Coffee/Teapot">Teapots</a>
           <a href="/category/Tea%20%26%20Coffee/Thermos">Arabic Tea &amp; Coffee Thermoses</a>
         </div></div>
