@@ -6,9 +6,9 @@ export const dynamic = "force-dynamic";
 const SUBCATEGORIES={
   "Tea & Coffee":["Coffee & Tea Set","Cups & Mugs","Thermos","Teapot"],
   "Dinnerware":["Serving Set","Bowl & Plate"],
-  "Kitchen Storage":["Canister Set","Storage Jar","Organizer"],
-  "Kitchenware":["Serving Set","Food Warmer","Kitchen Accessory","Candle & Burner"],
-  "Decorative Accents":["Incense Burners"],
+  "Kitchen Storage":["Canister & Jar Set","Organizer"],
+  "Kitchenware":["Serving Set","Food Warmer"],
+  "Decorative Accents":["Candle Holder","Decorative Items"],
   "Home Decor":[]
 };
 
