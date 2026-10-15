@@ -276,14 +276,14 @@ export default function ProductConfigurator({ product, description, keywords=[],
           <div className="keywordSection">
             <strong>Search Keywords</strong>
             <div className="seoFooterTags">
-              {keywords.slice(0,12).map(k=><span key={"seo-"+k}>{k}</span>)}
+              {keywords.slice(0,26).map(k=><span key={"seo-"+k}>{k}</span>)}
             </div>
           </div>
           <div className="keywordSection">
             <strong>Pinterest Keywords</strong>
             <div className="seoFooterTags">
-              {keywords.slice(0,14).map(k=>String(k).replace(/[^a-z0-9]+/gi,"")).filter(k=>k.length>=3).map(k=><span key={"pin-"+k}>#{k}</span>)}
-              <span>#TMBTY</span>
+              {keywords.slice(0,26).map(k=>String(k).replace(/[^\p{L}\p{N}]+/gu,"")).filter(k=>k.length>=3).map(k=><span key={"pin-"+k}>#{k}</span>)}
+              <span>#MigaMart</span>
               <span>#TMBTYKitchen</span>
               <span>#TMBTYKitchenAndDining</span>
             </div>
