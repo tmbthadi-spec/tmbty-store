@@ -30,6 +30,7 @@ export default function RootLayout({ children }) {
           <a href="/category/Tea%20%26%20Coffee/Cup%20%26%20Saucer">Cups &amp; Saucers</a>
           <a href="/category/Tea%20%26%20Coffee/Mug">Mugs</a>
           <a href="/category/Tea%20%26%20Coffee/Teapot">Teapots</a>
+          <a href="/collections/ceramic-coffee-tea">Ceramic Coffee &amp; Tea</a>
         </div></div>
         <div className="navGroup"><a href="/category/Dinnerware">Dinnerware</a><div className="navDropdown">
           <a href="/category/Dinnerware">Shop All Dinnerware</a>
