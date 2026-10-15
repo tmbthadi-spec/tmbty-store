@@ -4,7 +4,7 @@ import RatingStars from "../../../components/RatingStars";
 export const dynamic = "force-dynamic";
 
 const SUBCATEGORIES={
-  "Tea & Coffee":["Tea Set","Coffee Set","Cup & Saucer","Mug","Teapot"],
+  "Tea & Coffee":["Coffee & Tea Set","Cups & Mugs","Thermos","Teapot"],
   "Dinnerware":["Dinnerware Set","Plate","Bowl","Serving Set"],
   "Kitchen Storage":["Canister Set","Storage Jar","Organizer"],
   "Kitchenware":["Serving Tray","Chafing Dish","Cake Stand","Kitchen Accessory"],
@@ -25,7 +25,11 @@ export async function generateMetadata({ params }) {
 export default async function CategoryPage({ params }) {
   const { category } = await params;
   const name = decodeURIComponent(category);
-  const products = await getProductsByCategory(name);
+  const allProducts = await getProductsByCategory(name);
+  // Keep thermoses and pots in their own dedicated collections, not the main Coffee & Tea grid.
+  const products = name === "Tea & Coffee"
+    ? allProducts.filter(p => !["Thermos", "Teapot"].includes(p.subcategory))
+    : allProducts;
   return <main className="wrap" style={{paddingTop:30}}>
     <h1 style={{fontSize:38}}>{name}</h1>
     <p className="muted">Shop curated Miga Mart {name.toLowerCase()} finds for a beautiful, practical home.</p>
