@@ -51,7 +51,10 @@ export default async function ProductPage({ params }) {
   const p = await getProductBySlug(slug);
   if (!p) notFound();
 
-  const keywords = Array.isArray(p.seo_keywords) ? p.seo_keywords.filter(Boolean).slice(0,18) : [];
+  const allKeywords = Array.isArray(p.seo_keywords) ? p.seo_keywords.filter(Boolean) : [];
+  const arabicKeywords = allKeywords.filter(k=>/[\u0600-\u06FF]/.test(k));
+  const englishKeywords = allKeywords.filter(k=>!/[\u0600-\u06FF]/.test(k));
+  const keywords = [...arabicKeywords.slice(0,12), ...englishKeywords.slice(0,14)];
   const relatedProducts = await getRelatedProducts(p.id,p.category,p.subcategory,8);
   const validReviews=(Array.isArray(p.reviews)?p.reviews:[]).filter(r=>Number(r?.rating)>=1&&Number(r?.rating)<=5&&String(r?.text||"").trim());
   const averageRating=validReviews.length ? validReviews.reduce((a,r)=>a+Number(r.rating),0)/validReviews.length : null;
