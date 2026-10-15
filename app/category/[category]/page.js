@@ -8,6 +8,7 @@ const SUBCATEGORIES={
   "Dinnerware":["Dinnerware Set","Plate","Bowl","Serving Set"],
   "Kitchen Storage":["Canister Set","Storage Jar","Organizer"],
   "Kitchenware":["Serving Tray","Cake Stand","Kitchen Accessory"],
+  "Decorative Accents":["Incense Burners","Candle Holders","Decorative Trays"],
   "Home Decor":[]
 };
 
