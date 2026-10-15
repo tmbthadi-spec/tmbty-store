@@ -44,6 +44,12 @@ export default function RootLayout({ children }) {
           <a href="/category/Kitchenware/Cake%20Stand">Cake Stands</a>
           <a href="/category/Kitchenware/Kitchen%20Accessory">Kitchen Accessories</a>
         </div></div>
+        <div className="navGroup"><a href="/category/Decorative%20Accents">Decorative Accents</a><div className="navDropdown">
+          <a href="/category/Decorative%20Accents">Shop All Decorative Accents</a>
+          <a href="/category/Decorative%20Accents/Incense%20Burners">Incense Burners</a>
+          <a href="/category/Decorative%20Accents/Candle%20Holders">Candle Holders</a>
+          <a href="/category/Decorative%20Accents/Decorative%20Trays">Decorative Trays &amp; Sets</a>
+        </div></div>
         <div className="navGroup"><a href="/category/Kitchen%20Storage">Kitchen Storage</a><div className="navDropdown">
           <a href="/category/Kitchen%20Storage">Shop All Storage</a>
           <a href="/category/Kitchen%20Storage/Canister%20Set">Canister Sets</a>
