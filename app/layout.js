@@ -29,11 +29,8 @@ export default function RootLayout({ children }) {
           <a href="/category/Tea%20%26%20Coffee/Teapot">Teapot</a>
         </div></div>
         <div className="navGroup"><a href="/category/Dinnerware">Dinnerware</a><div className="navDropdown">
-          <a href="/category/Dinnerware">Shop All Dinnerware</a>
-          <a href="/category/Dinnerware/Dinnerware%20Set">Dinnerware Sets</a>
-          <a href="/category/Dinnerware/Plate">Plates</a>
-          <a href="/category/Dinnerware/Bowl">Bowls</a>
-          <a href="/category/Dinnerware/Serving%20Set">Serving Sets</a>
+          <a href="/category/Dinnerware/Serving%20Set">Serving Set</a>
+          <a href="/category/Dinnerware/Bowl%20%26%20Plate">Bowl &amp; Plate</a>
         </div></div>
         <div className="navGroup"><a href="/category/Kitchenware">Serving &amp; Kitchenware</a><div className="navDropdown">
           <a href="/category/Kitchenware">Shop All Kitchenware</a>
