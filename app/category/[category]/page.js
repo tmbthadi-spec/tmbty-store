@@ -7,7 +7,7 @@ const SUBCATEGORIES={
   "Tea & Coffee":["Coffee & Tea Set","Cups & Mugs","Thermos","Teapot"],
   "Dinnerware":["Serving Set","Bowl & Plate"],
   "Kitchen Storage":["Canister Set","Storage Jar","Organizer"],
-  "Kitchenware":["Serving Tray","Chafing Dish","Food Warmer","Kitchen Accessory"],
+  "Kitchenware":["Serving Set","Food Warmer","Kitchen Accessory","Candle & Burner"],
   "Decorative Accents":["Incense Burners"],
   "Home Decor":[]
 };
