@@ -284,3 +284,53 @@ h1,h2,h3{line-height:1.3}
 .productPage .detailsGrid span,.productPage .detailsGrid strong{font-size:18px}
 .productPage .fashionInfoRows span,.productPage .fashionInfoRows strong{font-size:17px}
 @media(max-width:650px){body{font-size:17px}.nav,.nav a{font-size:15px}.card .title,.homeProductCard .title{font-size:17px}.card .price{font-size:19px}.homeCategoryCaption strong{font-size:18px}.productPage .descriptionBlock p{font-size:19px}}
+
+
+/* Miga Mart luxury black / gray / gold visual system */
+:root{--miga-ink:#171717;--miga-gold:#b69a61;--miga-surface:#ededed;--miga-cream:#ededed}
+html,body{background:#ededed!important;color:#1c1c1c}
+body,button,input,select,textarea{font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.6}
+header{background:#151515;border-bottom:1px solid #383838;position:relative;z-index:15}
+header .top{min-height:88px;gap:28px}
+.brand{font-family:"Kalam",cursive;font-size:36px;color:#c6a96d;letter-spacing:.01em;white-space:nowrap}
+.nav{gap:clamp(10px,1.5vw,23px);align-items:center}
+.nav a{font-family:Arial,Helvetica,sans-serif;font-size:14px;letter-spacing:.035em;font-weight:700;color:#f4f4f4}
+.nav a:hover{color:#d1b77d}
+.navDropdown{background:#1e1e1e;border:1px solid #555}
+.navDropdown a{font-size:14px}
+.cartButton{background:#292929;border:1px solid #626262;color:#fff;border-radius:5px;font-size:14px;padding:10px 16px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.018em;color:#1c1c1c}
+.muted{font-family:Arial,Helvetica,sans-serif;font-size:17px;color:#555}
+.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.card,.homeProductCard{background:#fff;border:1px solid #d3d3d3;border-radius:4px;box-shadow:none;transition:box-shadow .2s ease,transform .2s ease}
+.card:hover,.homeProductCard:hover{box-shadow:0 10px 25px rgba(0,0,0,.1);transform:translateY(-3px)}
+.card>img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff;padding:10px}
+.card .body{padding:18px 16px 20px}
+.card .cat,.homeProductCard .cat{font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;letter-spacing:.11em;color:#686868;text-transform:uppercase}
+.card .title,.homeProductCard .title,.relatedTitle{font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.48;font-weight:700;color:#1b1b1b;min-height:0}
+.card .price,.homeProductCard .price,.relatedPrice{font-family:Arial,Helvetica,sans-serif;font-size:21px;font-weight:800;color:#1b1b1b}
+.ratingStars .ratingFilled,.reviewStars{color:#b69a61}
+.subcategoryLinks{gap:10px;margin:22px 0 28px}
+.subcategoryLinks a{font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;padding:10px 17px;background:#fff;border:1px solid #bcbcbc;border-radius:3px;color:#292929}
+.subcategoryLinks a:hover{background:#1d1d1d;color:#d7bb83;border-color:#1d1d1d}
+.categoryBreadcrumb{font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#555}
+.homeSectionHeading h2,.homeHeroCopy h1,.homeEditorialPanel h2{font-family:Georgia,"Times New Roman",serif}
+.homeCategoryCaption strong{font-family:Georgia,"Times New Roman",serif;font-size:21px}
+.homeSectionHeading p,.homeHeroCopy p,.homeEditorialPanel p{font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.8}
+.homeValueStrip{background:#dedede;border-color:#ccc}
+.homeCategoryCard{border-color:#d0d0d0}
+.homeCategoryImage{background:#fff}
+.homeEditorialPanel{background:linear-gradient(115deg,#191919,#343434)}
+.homePrimaryButton{background:#bfa36c;color:#171717}
+.homePrimaryButton:hover{background:#d0b680}
+.productPage .fashionInfo h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(29px,2.8vw,38px);font-weight:700;line-height:1.26;color:#191919}
+.productPage .fashionPrice{font-family:Arial,Helvetica,sans-serif;font-size:33px;color:#181818}
+.productPage .descriptionBlock h2,.productPage .detailsBlock h2,.productPage .relatedHeader h2{font-family:Georgia,"Times New Roman",serif;font-size:28px;color:#191919}
+.productPage .descriptionBlock p{font-family:Arial,Helvetica,sans-serif;font-size:19px;line-height:1.85;color:#202020}
+.productPage .fashionInfoRows,.productPage .fashionInfoRows strong{font-family:Arial,Helvetica,sans-serif;color:#292929;font-size:16px}
+.productPage .fashionAdd{background:#1b1b1b;color:#fff;border-radius:4px;font-size:16px}
+.productPage .fashionAdd:hover{background:#393939}
+footer{background:#191919;border-top:2px solid #b69a61;color:#d0d0d0;font-family:Arial,Helvetica,sans-serif;font-size:14px}
+@media(max-width:1020px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.nav{gap:10px}.nav a{font-size:13px}}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}header .top{min-height:0}.brand{font-size:31px}.nav a{font-size:14px}.card .body{padding:12px}.card .title{font-size:16px}.card .price{font-size:19px}.card>img{padding:5px}.productPage .descriptionBlock p{font-size:18px}}
+@media(max-width:390px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card .title{font-size:15px}}
