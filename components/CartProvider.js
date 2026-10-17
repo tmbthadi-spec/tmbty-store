@@ -29,9 +29,10 @@ export function CartProvider({ children }) {
   const add = (product) => {
     const variant = product.selectedVariant?.name || "";
     const cartKey = product.id + "::" + variant;
+    const quantity = Math.max(1,Math.min(99,Math.floor(Number(product.quantity)||1)));
     setCart(prev => {
       const found = prev.find(x => x.cartKey === cartKey);
-      if (found) return prev.map(x => x.cartKey === cartKey ? {...x, qty:x.qty+1} : x);
+      if (found) return prev.map(x => x.cartKey === cartKey ? {...x, qty:Math.min(99,x.qty+quantity)} : x);
       return [...prev, {
         cartKey,
         id: product.id,
@@ -39,7 +40,7 @@ export function CartProvider({ children }) {
         variant: variant || null,
         price: Number(product.retail_price || 0),
         image: product.cartImage || (Array.isArray(product.images) ? (product.images[0] || "") : ""),
-        qty: 1
+        qty: quantity
       }];
     });
     setOpen(true);
