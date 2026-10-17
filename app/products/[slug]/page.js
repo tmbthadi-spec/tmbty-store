@@ -1,3 +1,4 @@
+import "../product-page.css";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getRelatedProducts } from "../../../lib/supabase";
 import ProductConfigurator from "../../../components/ProductConfigurator";
