@@ -56,8 +56,9 @@ function normalizeVariants(variants, selectedColor, fallbackImage){
     const group=String(v?.group||v?.group_name||v?.groupName||v?.property||v?.property_name||v?.propertyName||v?.option_group||v?.optionGroup||"").trim();
     return {name:prettifyOptionName(rawName),rawName,image,group,price:Number(v?.retail_price ?? v?.price ?? 0)>0?Number(v?.retail_price ?? v?.price):null,selected:!!v?.selected,key:(group||"option")+"-"+(rawName||"option")+"-"+i};
   }).filter(v=>v.rawName) : [];
-  if(!list.length && selectedColor) return [{name:prettifyOptionName(selectedColor),rawName:selectedColor,image:fallbackImage||"",selected:true,key:"fallback"}];
-  return list;
+  const cleanList = list.filter(v=>!(/\b(?:sold|official store)\b/i.test(v.rawName||"") && /\d|^by/i.test(v.rawName||"")) && !/\/144x144\.(?:png|jpe?g)/i.test(v.image||""));
+  if(!cleanList.length && selectedColor) return [{name:prettifyOptionName(selectedColor),rawName:selectedColor,image:fallbackImage||"",selected:true,key:"fallback"}];
+  return cleanList;
 }
 
 function optionAwareTitle(baseTitle,selectedVariant){
