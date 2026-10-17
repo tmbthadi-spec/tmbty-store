@@ -114,6 +114,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
     optionGroups.map(g=>selectedOptions[g.name]).find(Boolean) ||
     null;
 
+  const [quantity,setQuantity] = useState(1);
   const [active,setActive] = useState({type:"image",value:images[0] || selectedVariant?.image || ""});
   const displayTitle = optionAwareTitle(product.title, selectedVariant);
   const selectedPrice = selectedVariant?.price ?? Number(product.retail_price||0);
@@ -136,6 +137,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
       ...product,
       title:displayTitle,
       retail_price:selectedPrice,
+      quantity,
       selectedVariant:optionText ? {name:optionText,image:selectedVariant?.image||""} : null,
       selectedOptions:selectedOptionList.map(x=>({group:x.group,name:x.value.name,rawName:x.value.rawName,image:x.value.image||""})),
       cartImage:selectedVariant?.image || images[0] || ""
@@ -226,7 +228,15 @@ export default function ProductConfigurator({ product, description, keywords=[],
           </div>
         </section>)}
 
-        <button className="fashionAdd" onClick={addItem}>ADD TO CART</button>
+        <div className="productQuantityRow">
+          <label htmlFor="product-quantity">Quantity</label>
+          <div className="productQuantityStepper" role="group" aria-label="Choose quantity">
+            <button type="button" aria-label="Decrease quantity" disabled={quantity<=1} onClick={()=>setQuantity(q=>Math.max(1,q-1))}>−</button>
+            <input id="product-quantity" type="number" min="1" max="99" step="1" value={quantity} aria-label="Quantity" onChange={e=>{const n=Number(e.target.value);setQuantity(Number.isFinite(n)?Math.max(1,Math.min(99,Math.floor(n))):1)}}/>
+            <button type="button" aria-label="Increase quantity" disabled={quantity>=99} onClick={()=>setQuantity(q=>Math.min(99,q+1))}>+</button>
+          </div>
+        </div>
+        <button className="fashionAdd" onClick={addItem}>ADD TO CART — ${(selectedPrice*quantity).toFixed(2)}</button>
 
         <div className="fashionInfoRows">
           <div><span>Shipping</span><strong>{product.shipping_eta_text ? `Estimated arrival ${product.shipping_eta_text}` : "Estimated at checkout"}</strong></div>
