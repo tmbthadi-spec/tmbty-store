@@ -251,3 +251,9 @@ footer{border-top:1px solid #d1d1cf;color:#626262;background:#e8e8e6}
 .adminAiCard{background:#fff;border-color:#d7d7d5;color:#222}
 .adminAiActions button:last-child{background:#222}
 :focus-visible{outline:2px solid #b99855;outline-offset:3px}
+
+/* Cool gray storefront background, no cream tint */
+:root{--miga-cream:#ededed;--miga-surface:#f2f2f2}
+html,body{background-color:#ededed;color:#1b1b1b}
+.categoryPage,.categoryContainer,.collectionPage,.shopPage,main{background-color:transparent}
+.card,.homeCategoryCard,.relatedCard{background-color:#fff}
