@@ -8,6 +8,9 @@ function inspect(product) {
   const variants = Array.isArray(product.variants) ? product.variants : [];
   const images = Array.isArray(product.images) ? product.images : [];
   if (!images[0]) issues.push("Missing main product photo");
+  const isPlaceholder = url => /\/144x144\.(png|jpg|jpeg)|placeholder|no.?image|store.?logo/i.test(String(url||""));
+  if (images.some(isPlaceholder)) issues.push("Possible placeholder or supplier logo in product gallery");
+
   if (images.length > 1 && new Set(images.map(i => typeof i === "string" ? i.trim() : JSON.stringify(i))).size < images.length) issues.push("Duplicate saved product photos — review before removing");
   if (!product.source_product_id || !/^\\d{12,18}$/.test(String(product.source_product_id))) issues.push("Supplier product ID missing or invalid — cannot verify options");
   if (!variants.length) issues.push("No saved options — verify whether supplier has choices");
@@ -16,6 +19,8 @@ function inspect(product) {
   for (const v of variants) {
     const name = String(v?.name || "").trim();
     if (!name) issues.push("Blank option label");
+    if (/\b(?:sold|official store)\b/i.test(name) && /\d|^by/i.test(name)) issues.push("Supplier storefront text imported as option: " + name);
+    if (isPlaceholder(v?.image)) issues.push("Possible placeholder image in option: " + name);
     if (/^(?:\d(?:\.0)?|\+\d+|all ratings|sort by default)$/i.test(name)) issues.push("Possible imported junk: " + name);
     if (/^(?:[a-z]{1,2}|\d+(?:\.\d+)?)$/i.test(name)) issues.push("Ambiguous option label — compare with supplier: " + name);
     if (/^(?:\d+ml){2,}$/i.test(name) || /(?:<\d+ml){2,}/i.test(name)) issues.push("Repeated capacity label: " + name);
@@ -59,10 +64,10 @@ export default async function CleanerPage({ searchParams }) {
   const flagged = products.map(p => ({ ...p, issues: inspect(p) })).filter(p => p.issues.length);
   const report = flagged.map(p => ({ product_id:p.id, title:p.title, product_url:"/products/"+p.slug, supplier_id:p.source_product_id, supplier_url: p.supplier_url || (/^\d{12,18}$/.test(String(p.source_product_id||"")) && /aliexpress/i.test(String(p.source||"")) ? "https://www.aliexpress.com/item/"+p.source_product_id+".html" : null), verification_status:"UNVERIFIED", verification_method:"Original supplier listing or authenticated supplier API required", issues:p.issues, original_variants:p.variants, original_images:p.images, safe_formatting_suggestions:safeSuggestions(p) }));
   const suggestionCount = report.reduce((n,p)=>n+p.safe_formatting_suggestions.length,0);
-  const reviewPriority = p => p.issues.some(i => /Missing main product photo|No saved options|Possible imported junk|Duplicate option|Supplier product ID missing/i.test(i)) ? "High" : p.issues.some(i => /Only one saved option|Ambiguous option|Generic product title|Vague product title|Overlong product title|Duplicate saved product photos/i.test(i)) ? "Medium" : "Low";
+  const reviewPriority = p => p.issues.some(i => /Missing main product photo|No saved options|Possible imported junk|Supplier storefront|placeholder|Duplicate option|Supplier product ID missing/i.test(i)) ? "High" : p.issues.some(i => /Only one saved option|Ambiguous option|Generic product title|Vague product title|Overlong product title|Duplicate saved product photos/i.test(i)) ? "Medium" : "Low";
   const priorityCounts = {High:0,Medium:0,Low:0};
   flagged.forEach(p => { priorityCounts[reviewPriority(p)]++; });
-  const visible = flagged.filter(p => filter === "all" || (filter === "options" && p.issues.some(i => /saved option|junk|duplicate|ambiguous option|repeated capacity|blank option/i.test(i))) || (filter === "images" && p.issues.some(i => /image|photo/i.test(i))) || (filter === "labels" && safeSuggestions(p).length > 0) || (filter === "titles" && p.issues.some(i => /product title/i.test(i))) || (filter === "supplier" && p.issues.some(i => /supplier|saved option|ambiguous option|option needs image verification/i.test(i))));
+  const visible = flagged.filter(p => filter === "all" || (filter === "options" && p.issues.some(i => /saved option|junk|supplier storefront|placeholder|duplicate|ambiguous option|repeated capacity|blank option/i.test(i))) || (filter === "images" && p.issues.some(i => /image|photo/i.test(i))) || (filter === "labels" && safeSuggestions(p).length > 0) || (filter === "titles" && p.issues.some(i => /product title/i.test(i))) || (filter === "supplier" && p.issues.some(i => /supplier|saved option|ambiguous option|option needs image verification/i.test(i))));
   const supplierReport = report.filter(p => p.issues.some(i => /supplier|saved option|ambiguous option|option needs image verification|product title/i.test(i))).map(p => ({...p,review_required:["Confirm original supplier product is the same listing","Compare all supplier option names and images","Verify title describes actual product","Do not remove any existing option without evidence"]}));
   const supplierCsv = [["product_id","title","supplier_id","supplier_url","verification_status","issue_count","saved_option_count","saved_image_count"],...supplierReport.map(p => [p.product_id,p.title,p.supplier_id||"",p.supplier_url||"",p.verification_status,p.issues.length,Array.isArray(p.original_variants)?p.original_variants.length:0,Array.isArray(p.original_images)?p.original_images.length:0])].map(row=>row.map(value=>'"'+String(value??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
   const supplierCsvUrl = "data:text/csv;charset=utf-8," + encodeURIComponent(supplierCsv);
