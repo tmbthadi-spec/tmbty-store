@@ -30,13 +30,14 @@ export default async function CategoryPage({ params }) {
   const products = name === "Tea & Coffee"
     ? allProducts.filter(p => !["Thermos", "Teapot"].includes(p.subcategory))
     : allProducts;
-  return <main className="wrap" style={{paddingTop:30}}>
-    <h1 style={{fontSize:38}}>{name}</h1>
+  return <main className="wrap luxuryCollection">
+    <h1 className="luxuryCollectionTitle">{name}</h1>
     <p className="muted">Shop curated Miga Mart {name.toLowerCase()} finds for a beautiful, practical home.</p>
     {SUBCATEGORIES[name]?.length ? <div className="subcategoryLinks">
       {SUBCATEGORIES[name].map(sub=><a key={sub} href={`/category/${encodeURIComponent(name)}/${encodeURIComponent(sub)}`}>{sub}</a>)}
     </div> : null}
-    <div className="grid">
+    <div className="collectionToolbar"><span>{products.length} products</span><span>Explore the collection</span></div>
+    <div className="grid luxuryProductGrid">
       {products.map(p=><a className="card" key={p.id} href={`/products/${p.slug}`}>
         {p.images?.[0] && <img src={p.images[0]} alt={p.title} loading="lazy" />}
         <div className="body">
@@ -44,6 +45,7 @@ export default async function CategoryPage({ params }) {
           <div className="title">{p.title}</div>
           <RatingStars reviews={p.reviews||[]} rating={p.rating} compact />
           <div className="price">${Number(p.retail_price||0).toFixed(2)}</div>
+          <span className="collectionShopLink">View details <span aria-hidden="true">→</span></span>
         </div>
       </a>)}
     </div>
