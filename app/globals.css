@@ -334,3 +334,25 @@ footer{background:#191919;border-top:2px solid #b69a61;color:#d0d0d0;font-family
 @media(max-width:1020px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.nav{gap:10px}.nav a{font-size:13px}}
 @media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}header .top{min-height:0}.brand{font-size:31px}.nav a{font-size:14px}.card .body{padding:12px}.card .title{font-size:16px}.card .price{font-size:19px}.card>img{padding:5px}.productPage .descriptionBlock p{font-size:18px}}
 @media(max-width:390px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card .title{font-size:15px}}
+
+
+/* Boutique collection: intentional reference-inspired layout */
+.luxuryCollection{max-width:1320px;padding:38px 28px 80px!important}
+.luxuryCollectionTitle{font:500 clamp(35px,4vw,52px)/1.18 Georgia,"Times New Roman",serif!important;text-align:center;margin:16px 0 12px;letter-spacing:-.025em}
+.luxuryCollection>.muted{text-align:center;max-width:760px;margin:0 auto 28px;font:400 17px/1.75 Arial,sans-serif;color:#555}
+.luxuryCollection .categoryBreadcrumb{margin-bottom:16px}
+.luxuryCollection .subcategoryLinks{justify-content:center;display:flex;flex-wrap:wrap;margin:28px auto 34px}
+.luxuryCollection .collectionToolbar{border-top:1px solid #bcbcbc;border-bottom:1px solid #bcbcbc;display:flex;justify-content:space-between;align-items:center;padding:16px 2px;margin:22px 0 25px;font:600 14px/1.4 Arial,sans-serif;color:#555}
+.luxuryCollection .luxuryProductGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 19px}
+.luxuryCollection .luxuryProductGrid .card{display:flex;flex-direction:column;background:#fff;border:1px solid #d4d4d4;border-radius:0;box-shadow:none;min-width:0;overflow:hidden;transition:box-shadow .2s,transform .2s}
+.luxuryCollection .luxuryProductGrid .card:hover{transform:translateY(-3px);box-shadow:0 8px 25px #00000016}
+.luxuryCollection .luxuryProductGrid .card>img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;object-position:center;background:#fff;padding:14px}
+.luxuryCollection .luxuryProductGrid .card .body{display:flex;flex-direction:column;flex:1;gap:5px;padding:18px 16px 20px;border-top:1px solid #e8e8e8}
+.luxuryCollection .luxuryProductGrid .cat{font:600 11px/1.5 Arial,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#777}
+.luxuryCollection .luxuryProductGrid .title{font:600 18px/1.45 Arial,sans-serif;letter-spacing:0;color:#1b1b1b;margin:4px 0 5px;min-height:0}
+.luxuryCollection .luxuryProductGrid .price{font:700 22px/1.35 Arial,sans-serif;color:#191919;margin:6px 0}
+.luxuryCollection .luxuryProductGrid .collectionShopLink{display:block;text-align:center;background:#202020;color:#e2c58c;border:1px solid #202020;font:700 14px/1.4 Arial,sans-serif;letter-spacing:.035em;padding:12px 10px;margin-top:auto;transition:background .2s}
+.luxuryCollection .luxuryProductGrid .card:hover .collectionShopLink{background:#3a3a3a}
+.luxuryCollection .luxuryProductGrid .ratingStars{margin:3px 0}
+@media(max-width:1000px){.luxuryCollection .luxuryProductGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.luxuryCollection{padding:25px 14px 55px!important}.luxuryCollection .luxuryProductGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.luxuryCollection .luxuryProductGrid .card>img{padding:6px}.luxuryCollection .luxuryProductGrid .card .body{padding:12px 10px 14px}.luxuryCollection .luxuryProductGrid .title{font-size:15px}.luxuryCollection .luxuryProductGrid .price{font-size:19px}.luxuryCollection .luxuryProductGrid .collectionShopLink{font-size:12px;padding:10px 4px}.luxuryCollection .collectionToolbar{font-size:12px}}
