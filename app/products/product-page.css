@@ -87,3 +87,13 @@
 .productPage .descriptionBlock h2,.productPage .detailsBlock h2{font-family:Arial,Helvetica,sans-serif;font-size:26px}
 @media(max-width:950px){.productPage .fashionProduct{grid-template-columns:1fr;gap:24px}.productPage .fashionMedia{grid-template-columns:76px minmax(0,1fr)}.productPage .fashionThumbRail{flex-direction:column}.productPage .fashionMainMedia{height:570px}}
 @media(max-width:600px){.productPage .fashionMedia{grid-template-columns:1fr;gap:10px}.productPage .fashionMainMedia{height:430px;grid-row:1}.productPage .fashionThumbRail{grid-row:2;flex-direction:row;overflow-x:auto;gap:8px}.productPage .fashionThumbWrap{flex:0 0 65px;width:65px}.productPage .fashionThumb{width:65px;height:72px}.productPage .fashionInfo{padding:20px}.productPage .fashionInfo h1{font-size:27px}.productPage .descriptionBlock p{font-size:18px}}
+
+
+/* Product quantity control */
+.productPage .productQuantityRow{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:19px 0 16px;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#202020}
+.productPage .productQuantityStepper{display:flex;align-items:center;border:1px solid #c9c9c9;border-radius:5px;overflow:hidden;background:#fff;height:46px}
+.productPage .productQuantityStepper button{border:0;background:#f0f0f0;color:#222;width:44px;height:46px;font:700 23px Arial,sans-serif;cursor:pointer}
+.productPage .productQuantityStepper button:disabled{opacity:.4;cursor:not-allowed}
+.productPage .productQuantityStepper button:not(:disabled):hover{background:#d6d6d6}
+.productPage .productQuantityStepper input{appearance:textfield;-moz-appearance:textfield;border:0;border-left:1px solid #d6d6d6;border-right:1px solid #d6d6d6;text-align:center;width:58px;height:46px;font:700 18px Arial,sans-serif;color:#1c1c1c;background:#fff;padding:0}
+.productPage .productQuantityStepper input::-webkit-inner-spin-button,.productPage .productQuantityStepper input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
