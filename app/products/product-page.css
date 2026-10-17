@@ -1,0 +1,39 @@
+/* Miga Mart refined product pages: neutral backdrop and clear product information */
+.productPage{max-width:1200px;padding-top:26px}
+.productPage .fashionProduct{gap:42px;padding:8px 0 28px;grid-template-columns:minmax(0,1.04fr) minmax(350px,.96fr)}
+.productPage .fashionInfo{position:static;background:#fff;padding:28px;border:1px solid #dededc;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.035)}
+.productPage .fashionCategory{color:#777;font-size:11px;letter-spacing:.09em;margin-bottom:13px}
+.productPage .fashionInfo h1{color:#202020;font:500 clamp(26px,2.5vw,35px)/1.25 Georgia,serif;margin:0 0 14px}
+.productPage .fashionPrice{color:#202020;font-size:30px;font-weight:800;margin:12px 0 24px}
+.productPage .ratingStars strong{color:#252525}.productPage .ratingStars em{color:#666}
+.productPage .fashionMedia{grid-template-columns:74px minmax(0,1fr);gap:12px}
+.productPage .fashionMainMedia{background:#fff;border:1px solid #dededc;border-radius:10px;min-height:530px;overflow:hidden}
+.productPage .fashionMainMedia .mediaWithWatermark{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative}
+.productPage .fashionMainMedia img,.productPage .fashionMainMedia video{width:100%;height:auto;max-height:620px;object-fit:contain;background:#fff}
+.productPage .fashionThumb{background:#fff;border:1px solid #d7d7d5;border-radius:6px;overflow:hidden}
+.productPage .fashionThumb.active{border:2px solid #b99855}
+.productPage .fashionAdd{background:#222426;color:#fff;border-radius:5px;letter-spacing:.07em;height:54px}
+.productPage .fashionAdd:hover{background:#424446}
+.productPage .fashionOptions{border-color:#e1e1df}.productPage .fashionOptionHeading,.productPage .fashionOptionHeading span{color:#333}
+.productPage .fashionSwatch{background:#fff;border-color:#d6d6d4;border-radius:5px}.productPage .fashionSwatch small{color:#444}
+.productPage .fashionInfoRows{border-color:#e1e1df}
+.productPage .fashionInfoRows>div{border-color:#e1e1df;color:#333;align-items:center}
+.productPage .fashionInfoRows span{color:#777}.productPage .fashionInfoRows strong{color:#333;text-align:right}
+.productPage .secureCheckoutBox{background:#f5f5f3;color:#242424;border:1px solid #e0e0dd;border-radius:7px;margin-top:20px;padding:17px}
+.productPage .secureCheckoutTitle{color:#333}.productPage .secureCheckoutNote{color:#777}
+.productPage .productShare{border-color:#e2e2df}.productPage .shareLabel{color:#333}.productPage .shareHint{color:#777}
+.productPage .fashionDetails{border-color:#dededc;margin-top:10px;padding-top:26px}
+.productPage .detailsBlock{max-width:100%;padding-bottom:20px}
+.productPage .detailsBlock h2,.productPage .relatedHeader h2,.productPage .productReviewsHeader h2{color:#222}
+.productPage .detailsGrid{border-color:#dededc}.productPage .detailsGrid>div{border-color:#dededc;background:#fff;color:#222}.productPage .detailsGrid span{color:#666}.productPage .detailsGrid strong{color:#222}
+.productPage .descriptionBlock p{color:#3b3b3b;line-height:1.7;white-space:normal}
+.productPage .descriptionBlock{padding-bottom:4px}
+.productPage .relatedProducts{margin-top:22px;padding-top:25px;border-color:#dcdcd9}
+.productPage .relatedCard{background:#fff;color:#222;border:1px solid #dededc;border-radius:6px;overflow:hidden}
+.productPage .relatedBody{color:#222}.productPage .relatedTitle,.productPage .relatedPrice{color:#222}
+.productPage .relatedHeader span{color:#666}
+.productPage .productReviews{border-color:#dededc}.productPage .productReviewCard{background:#fff;color:#222;border-color:#dededc;border-radius:6px}
+.productPage .productReviewCard p,.productPage .reviewerName{color:#222}
+.productPage .mediaEmpty{color:#999}
+@media(max-width:900px){.productPage .fashionProduct{grid-template-columns:1fr;gap:24px}.productPage .fashionInfo{padding:22px}.productPage .fashionMainMedia{min-height:360px}.productPage .fashionMedia{grid-template-columns:1fr}.productPage .fashionThumbRail{order:2;flex-direction:row;overflow-x:auto}}
+@media(max-width:600px){.productPage{padding-top:14px}.productPage .fashionInfo{padding:18px}.productPage .fashionInfo h1{font-size:27px}.productPage .fashionMainMedia{min-height:300px}.productPage .fashionMainMedia img{max-height:450px}.productPage .fashionDetails{padding-top:20px}}
