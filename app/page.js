@@ -1,3 +1,4 @@
+import "./home.css";
 import { getPublishedProducts } from "../lib/supabase";
 import RatingStars from "../components/RatingStars";
 
