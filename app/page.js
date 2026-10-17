@@ -3,15 +3,31 @@ import RatingStars from "../components/RatingStars";
 
 export const dynamic = "force-dynamic";
 
+const collections = [
+  { label: "Coffee & Tea", href: "/category/Tea%20%26%20Coffee", detail: "Explore the collection →" },
+  { label: "Elegant Dinnerware", href: "/category/Dinnerware", detail: "Explore the collection →" },
+  { label: "Decorative Accents", href: "/category/Decorative%20Accents", detail: "Explore the collection →" }
+];
+
 export default async function Home() {
   const products = await getPublishedProducts();
   return <main>
     <section className="hero"><div className="wrap"><div className="heroBox">
-      <h1>Elegant finds for your kitchen & table.</h1>
-      <p className="muted">Discover beautiful tea sets, coffee sets, dinnerware, kitchen storage, serving pieces and home décor made for everyday living and special moments.</p>
+      <span className="heroEyebrow">Miga Mart · Kitchen, Dining & Home</span>
+      <h1>Everyday moments, beautifully styled.</h1>
+      <p className="muted">Elegant coffee and tea sets, luminous serving pieces, and thoughtful accents to bring warmth and character to your home.</p>
+      <a className="heroAction" href="#shop-new">Explore the collection →</a>
     </div></div></section>
-    <section className="wrap">
-      <h2>New Kitchen & Dining Finds</h2>
+    <section className="wrap" aria-label="Shop by collection">
+      <div className="homeIntro"><div><span className="sectionEyebrow">Discover Miga Mart</span><h2>Find your signature style</h2></div>
+      <p className="muted">Beautiful details for the table, the kitchen, and the spaces you love.</p></div>
+      <div className="homeCollections">
+        {collections.map(c => <a className="homeCollection" href={c.href} key={c.label}><span>{c.label}</span><small>{c.detail}</small></a>)}
+      </div>
+    </section>
+    <section className="wrap" id="shop-new">
+      <div className="homeIntro"><div><span className="sectionEyebrow">The latest finds</span><h2>New & noteworthy</h2></div>
+      <p className="muted">Explore our latest kitchen, dining, and home discoveries.</p></div>
       <div className="grid">
         {products.map(p => <a className="card" key={p.id} href={`/products/${p.slug}`}>
           {p.images?.[0] && <img src={p.images[0]} alt={p.title} loading="lazy" />}
@@ -24,5 +40,5 @@ export default async function Home() {
         </a>)}
       </div>
     </section>
-  </main>
+  </main>;
 }
