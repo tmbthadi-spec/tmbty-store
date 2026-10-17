@@ -257,3 +257,29 @@ footer{border-top:1px solid #d1d1cf;color:#626262;background:#e8e8e6}
 html,body{background-color:#ededed;color:#1b1b1b}
 .categoryPage,.categoryContainer,.collectionPage,.shopPage,main{background-color:transparent}
 .card,.homeCategoryCard,.relatedCard{background-color:#fff}
+
+
+/* Miga Mart: large, readable casual handwritten typography */
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap');
+html,body,button,input,select,textarea{font-family:"Kalam","Comic Sans MS",cursive}
+body{font-size:18px;line-height:1.65}
+.nav,.nav a{font-size:17px;line-height:1.45}
+.brand{font-family:"Kalam","Comic Sans MS",cursive;font-size:31px}
+h1,h2,h3,.title,.price,.cat,.card .title,.card .price,.categoryBreadcrumb,.subcategoryLinks a,.homeCategoryCaption strong,.homeSectionHeading h2,.homeHeroCopy h1,.homeEditorialPanel h2{font-family:"Kalam","Comic Sans MS",cursive}
+h1,h2,h3{line-height:1.3}
+.card .title,.homeProductCard .title,.relatedTitle{font-size:19px;line-height:1.4;font-weight:700;min-height:0}
+.card .price,.homeProductCard .price,.relatedPrice{font-size:21px;font-weight:700;color:#181818}
+.cat,.card .cat{font-size:13px;color:#555;font-weight:700;letter-spacing:.02em}
+.card .body{padding:16px}
+.homeSectionHeading h2{font-size:clamp(35px,4vw,50px)}
+.homeSectionHeading p,.homeHeroCopy p,.homeEditorialPanel p{font-size:19px}
+.homeCategoryCaption strong{font-size:22px}
+.productPage .fashionInfo h1{font-family:"Kalam","Comic Sans MS",cursive;font-size:clamp(29px,3vw,39px);line-height:1.32}
+.productPage .fashionCategory{font-size:14px}
+.productPage .fashionPrice{font-family:"Kalam","Comic Sans MS",cursive;font-size:34px}
+.productPage .descriptionBlock h2,.productPage .detailsBlock h2,.productPage .relatedHeader h2{font-family:"Kalam","Comic Sans MS",cursive;font-size:29px}
+.productPage .descriptionBlock p,.productPage .descriptionBlock,.productPage .detailsGrid,.productPage .fashionInfoRows{font-family:"Kalam","Comic Sans MS",cursive;font-size:20px;line-height:1.8;color:#202020}
+.productPage .descriptionBlock p{font-weight:400}
+.productPage .detailsGrid span,.productPage .detailsGrid strong{font-size:18px}
+.productPage .fashionInfoRows span,.productPage .fashionInfoRows strong{font-size:17px}
+@media(max-width:650px){body{font-size:17px}.nav,.nav a{font-size:15px}.card .title,.homeProductCard .title{font-size:17px}.card .price{font-size:19px}.homeCategoryCaption strong{font-size:18px}.productPage .descriptionBlock p{font-size:19px}}
