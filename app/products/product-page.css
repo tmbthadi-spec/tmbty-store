@@ -58,3 +58,32 @@
 .productPage .fashionMainMedia .tmbtyMediaWatermark{pointer-events:none}
 @media(max-width:900px){.productPage .fashionMainMedia{height:480px;max-height:none;min-height:0}}
 @media(max-width:600px){.productPage .fashionMainMedia{height:350px;min-height:0}.productPage .descriptionBlock{padding:18px}.productPage .descriptionBlock p{font-size:16px;line-height:1.75}}
+
+
+/* Premium gallery and readable purchase panel — final scoped overrides */
+.productPage{max-width:1280px;padding-top:30px}
+.productPage .fashionProduct{grid-template-columns:minmax(0,1.16fr) minmax(360px,.84fr);gap:32px;align-items:start}
+.productPage .fashionMedia{display:grid;grid-template-columns:76px minmax(0,1fr);gap:14px;min-width:0;align-items:start}
+.productPage .fashionThumbRail{display:flex;flex-direction:column;gap:10px;min-width:0}
+.productPage .fashionThumbWrap{width:76px;min-width:0}
+.productPage .fashionThumb{width:76px;height:84px;padding:0;border-radius:7px;overflow:hidden}
+.productPage .fashionThumb img{width:100%;height:100%;object-fit:cover}
+.productPage .fashionMainMedia{width:100%;height:620px;min-height:0;max-height:none;aspect-ratio:auto;position:relative;background:#fff;border:1px solid #dedede;border-radius:9px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.productPage .fashionMainMedia .mediaWithWatermark{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%;padding:12px;overflow:hidden}
+.productPage .fashionMainMedia .mediaWithWatermark>img,.productPage .fashionMainMedia .mediaWithWatermark>video{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center;background:#fff}
+.productPage .tmbtyMediaWatermark{display:none!important}
+.productPage .pinItMain{z-index:3}
+.productPage .fashionInfo{background:#fff;border:1px solid #ddd;padding:30px 30px 26px;border-radius:9px;box-shadow:none}
+.productPage .fashionInfo h1{font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:clamp(27px,2.35vw,34px);line-height:1.3;letter-spacing:-.02em;color:#191919}
+.productPage .fashionCategory{font:700 12px/1.5 Arial,Helvetica,sans-serif;color:#656565;letter-spacing:.07em}
+.productPage .fashionPrice{font-family:Arial,Helvetica,sans-serif;font-size:32px;font-weight:800;line-height:1.4;color:#181818}
+.productPage .fashionOptions,.productPage .fashionOptionHeading,.productPage .fashionSwatch,.productPage .fashionInfoRows,.productPage .secureCheckoutBox,.productPage .productShare{font-family:Arial,Helvetica,sans-serif}
+.productPage .fashionOptionHeading,.productPage .fashionInfoRows{font-size:15px;color:#292929}
+.productPage .fashionSwatch small{font:500 13px/1.35 Arial,Helvetica,sans-serif}
+.productPage .fashionAdd{font:800 15px/1 Arial,Helvetica,sans-serif;min-height:54px}
+.productPage .secureCheckoutBox{background:#fafafa;border-color:#e2e2e2}
+.productPage .secureCheckoutTitle{font-size:12px;color:#333}
+.productPage .descriptionBlock p{font-family:Arial,Helvetica,sans-serif;font-size:19px;line-height:1.85;color:#202020}
+.productPage .descriptionBlock h2,.productPage .detailsBlock h2{font-family:Arial,Helvetica,sans-serif;font-size:26px}
+@media(max-width:950px){.productPage .fashionProduct{grid-template-columns:1fr;gap:24px}.productPage .fashionMedia{grid-template-columns:76px minmax(0,1fr)}.productPage .fashionThumbRail{flex-direction:column}.productPage .fashionMainMedia{height:570px}}
+@media(max-width:600px){.productPage .fashionMedia{grid-template-columns:1fr;gap:10px}.productPage .fashionMainMedia{height:430px;grid-row:1}.productPage .fashionThumbRail{grid-row:2;flex-direction:row;overflow-x:auto;gap:8px}.productPage .fashionThumbWrap{flex:0 0 65px;width:65px}.productPage .fashionThumb{width:65px;height:72px}.productPage .fashionInfo{padding:20px}.productPage .fashionInfo h1{font-size:27px}.productPage .descriptionBlock p{font-size:18px}}
