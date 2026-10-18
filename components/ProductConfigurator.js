@@ -181,6 +181,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
     <section className="fashionProduct">
       <div className="fashionMedia">
         <div className="fashionThumbRail">
+          {product.slug==="simulated-fruits-handle-mug-fun-ceramic-cups-dining-table-coffee-67069263" && images.length>1 ? <button className="fashionThumb videoThumb" onClick={()=>setActive({type:"fruit-showcase",value:images[0]})} aria-label="Play fruit mug photo showcase"><img src={images[0]} alt=""/><span className="playBadge">▶</span></button> : null}
           {product.video_url ? <button className={"fashionThumb videoThumb"+(active.type==="video"?" active":"")} onClick={()=>setActive({type:"video",value:product.video_url})} aria-label="Play product video">
             {images[0] ? <img src={images[0]} alt=""/> : null}<span className="playBadge">▶</span>
           </button> : null}
@@ -192,7 +193,7 @@ export default function ProductConfigurator({ product, description, keywords=[],
           </div>)}
         </div>
         <div className="fashionMainMedia">
-          {active.type==="video" && product.video_url
+          {active.type==="fruit-showcase" ? <div className="fruitMugPhotoShowcase" aria-label="Animated product photo showcase">{images.slice(0,6).map((url,index)=><img key={url+index} src={url} alt={displayTitle+" photo "+(index+1)} style={{animationDelay:(index*3)+"s",animationDuration:(images.slice(0,6).length*3)+"s"}}/>)}</div> : active.type==="video" && product.video_url
             ? <>
                 <div className="mediaWithWatermark">
                   <video controls autoPlay playsInline poster={images[0]||undefined} src={product.video_url}/>
