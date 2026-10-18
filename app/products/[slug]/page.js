@@ -100,7 +100,7 @@ export default async function ProductPage({ params }) {
     <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}} />
     <ProductConfigurator
       product={{
-        id:p.id,title:p.title,retail_price:p.retail_price,images:p.images||[],
+        id:p.id,slug:p.slug,title:p.title,retail_price:p.retail_price,images:p.images||[],
         video_url:p.video_url||"",variants:p.variants||[],reviews:p.reviews||[],rating:p.rating||null,selected_color:p.selected_color||"",
         category:p.category||"",subcategory:p.subcategory||"",shipping_eta_text:p.shipping_eta_text||""
       }}
