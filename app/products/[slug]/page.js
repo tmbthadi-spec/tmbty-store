@@ -17,10 +17,9 @@ export async function generateMetadata({ params }) {
   const baseDescription = (p.description || p.meta_description || "").replace(/#\w+/g,"").replace(/\s+/g," ").trim();
   const metaDescription = (p.meta_description || baseDescription || "").replace(/#\w+/g,"").replace(/\s+/g," ").trim().slice(0,160);
   const pinterestDescription = [
-    baseDescription,
-    options.length ? `Available styles/colors: ${options.join(", ")}.` : "",
-    keywords.length ? `Popular searches: ${keywords.slice(0,8).join(", ")}.` : ""
-  ].filter(Boolean).join(" ").slice(0,500);
+    metaDescription,
+    options.length ? `Available styles and colors: ${options.join(", ")}.` : ""
+  ].filter(Boolean).join(" ").slice(0,400);
 
   return {
     title: p.title,
